@@ -30,6 +30,8 @@ static id3_utf8_t
 }
 
 
+/* Initalize the MP3 file. Stores tag values in the media_file_tags
+   structure. */
 static struct id3_file *
 initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
 {
@@ -39,10 +41,13 @@ initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
   struct id3_frame *frame;
   id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
   if (!id3_file) {
-    printf("Failure :-(.\n");
+    fprintf(stderr, "Error reading file %s\n", filename);
     return 0;
   }
   id3_tag = id3_file_tag(id3_file);
+
+  /* Store the tag, if it exists. Else store NULL, so that we can
+     happily free these later. */
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_TITLE, 0);   
   media_file_tags->title = (frame) ? mp3tag_from_frame(frame) : NULL;
 
@@ -70,6 +75,7 @@ initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
   return id3_file;
 }
 
+/* Release the string resources we have allocated. */
 static int
 close_mp3(struct id3_file *id3_file, struct media_file_tags *media_file_tags)
 {
@@ -86,6 +92,7 @@ close_mp3(struct id3_file *id3_file, struct media_file_tags *media_file_tags)
 }
  
 
+/* TODO */
 int
 display_oggvorbis_title(const char *filename)
 {
@@ -104,6 +111,7 @@ display_oggvorbis_title(const char *filename)
   return 1;
 }
 
+/* Process one media file. */
 int
 processFile(const char *filename, struct tag_regexes *tag_regexes)
 {
