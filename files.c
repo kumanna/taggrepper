@@ -5,6 +5,8 @@
 #include <vorbis/vorbisfile.h>
 #include "files.h"
 
+/* Extract tag from MP3 frame. This code closely follows
+   the libid3tag example. */
 static id3_utf8_t
 *mp3tag_from_frame(struct id3_frame *frame)
 {
@@ -15,11 +17,8 @@ static id3_utf8_t
   field = id3_frame_field(frame, 1);
   nstrings = id3_field_getnstrings(field);
   for (j = 0; j < nstrings; ++j) {
-    id3_latin1_t *latin1;
     ucs4 = id3_field_getstrings(field, j);
     utf8 = id3_ucs4_utf8duplicate(ucs4);
-    latin1 = id3_ucs4_latin1duplicate(ucs4);
-    free(latin1);
    if (j == 0) {
       return utf8;
     }
