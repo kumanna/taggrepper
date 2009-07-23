@@ -14,13 +14,11 @@ static id3_utf8_t
   unsigned int nstrings, j;
   field = id3_frame_field(frame, 1);
   nstrings = id3_field_getnstrings(field);
-  printf("Entered\n");
   for (j = 0; j < nstrings; ++j) {
     id3_latin1_t *latin1;
     ucs4 = id3_field_getstrings(field, j);
     utf8 = id3_ucs4_utf8duplicate(ucs4);
     latin1 = id3_ucs4_latin1duplicate(ucs4);
-    printf("Storing %s\n", latin1);
     free(latin1);
    if (j == 0) {
       return utf8;
@@ -29,7 +27,6 @@ static id3_utf8_t
       free(utf8);
     }
   }
-  printf("Left!\n");
   return NULL;
 }
 
@@ -77,21 +74,13 @@ initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
 static int
 close_mp3(struct id3_file *id3_file, struct media_file_tags *media_file_tags)
 {
-  if (media_file_tags->title) {  printf("%s\n", media_file_tags->title); }
   free(media_file_tags->title);
-  if (media_file_tags->artist) {  printf("%s\n", media_file_tags->artist); }
   free(media_file_tags->artist);
-  if (media_file_tags->album) {  printf("%s\n", media_file_tags->album); }
   free(media_file_tags->album);
-  if (media_file_tags->track) {  printf("%s\n", media_file_tags->track); }
   free(media_file_tags->track);
-  if ( media_file_tags->year) {  printf("%s\n", media_file_tags->year); }
   free(media_file_tags->year);
-  if (media_file_tags->genre) {  printf("%s\n", media_file_tags->genre); }
   free(media_file_tags->genre);
-  if (media_file_tags->comment) {  printf("%s\n", media_file_tags->comment); }
   free(media_file_tags->comment);
-  if (media_file_tags->encoded_by) {  printf("%s\n", media_file_tags->encoded_by); }
   free(media_file_tags->encoded_by);
   id3_file_close(id3_file);
   return 1;
