@@ -7,6 +7,8 @@
 
 #include "taggrep.h"
 
+/* This function releases the memory allocated on the heap for storing
+   the regular expressions. The magic handle is also closed. */
 static void
 free_tag_regexes(struct tag_regexes *tag_regexes)
 {
@@ -24,6 +26,7 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
   magic_close(tag_regexes->magic_handle);
 }
 
+/* Parse the command line options and process each file */
 static int
 parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
 {
@@ -38,6 +41,8 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
   while (1) {
     int this_option_optind = optind ? optind : 1;
     int option_index = 0;
+
+    /* TODO: Is this list of tags good enough? More? Less? */
     static struct option long_options[] = {
       {"title", 1, 0, 't'},
       {"artist", 1, 0, 'a'},
@@ -61,7 +66,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
 
     switch (c) {
     case 0:
-      //      printf("option %s", long_options[option_index].name);
+      /* Check if a known long option was specified */
       if (!strcmp(long_options[option_index].name, "composer")) {
 	tag_regexes->composer_regex = strdup(optarg);
       }
@@ -80,13 +85,9 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       else if (!strcmp(long_options[option_index].name, "encoded-by")) {
 	tag_regexes->encoded_by_regex = strdup(optarg);
       }
-
-      if (optarg) {
-	printf(" with arg %s", optarg);
-      }
-      printf("\n");
       break;
 
+    /* Handle short options */
     case 't':
       tag_regexes->title_regex = strdup(optarg);
       break;
@@ -115,7 +116,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       break;
 
     default:
-      printf("?? getopt returned character code 0%o ??\n", c);
+      printf("Error processing command line arguments: getopt returned character code 0%o ??\n", c);
     }
   }
   return EXIT_SUCCESS;
@@ -125,12 +126,14 @@ int
 main(int argc, char *argv[])
 {
   int ret;
+  /* Structure possessing the regular expressions */
   struct tag_regexes tag_regexes_struct;  
   mtrace();
   ret = parse_command_line(argc, argv, &tag_regexes_struct);
+
+  /* We interpret non-arguments as file names */
   if (optind < argc) {
     while (optind < argc) {
-      //printf("%s ", argv[optind++]);
       processFile(argv[optind++], &tag_regexes_struct);
     }
   }
