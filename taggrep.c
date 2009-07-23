@@ -7,35 +7,33 @@
 
 #include "taggrep.h"
 
-static struct tag_regexes tag_regexes;
-
 static void
-free_tag_regexes(void)
+free_tag_regexes(struct tag_regexes *tag_regexes)
 {
-  free(tag_regexes.title_regex);
-  free(tag_regexes.artist_regex);
-  free(tag_regexes.album_regex);
-  free(tag_regexes.year_regex);
-  free(tag_regexes.genre_regex);
-  free(tag_regexes.comment_regex);
-  free(tag_regexes.composer_regex);
-  free(tag_regexes.orig_artist_regex);
-  free(tag_regexes.copyright_regex);
-  free(tag_regexes.url_regex);
-  free(tag_regexes.encoded_by_regex);
-  magic_close(tag_regexes.magic_handle);
+  free(tag_regexes->title_regex);
+  free(tag_regexes->artist_regex);
+  free(tag_regexes->album_regex);
+  free(tag_regexes->year_regex);
+  free(tag_regexes->genre_regex);
+  free(tag_regexes->comment_regex);
+  free(tag_regexes->composer_regex);
+  free(tag_regexes->orig_artist_regex);
+  free(tag_regexes->copyright_regex);
+  free(tag_regexes->url_regex);
+  free(tag_regexes->encoded_by_regex);
+  magic_close(tag_regexes->magic_handle);
 }
 
 static int
-parse_command_line(int argc, char *argv[])
+parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
 {
   int c;
   int digit_optind = 0;
   magic_t magic_handle;
 
-  memset(&tag_regexes, 0, sizeof(struct tag_regexes));
-  tag_regexes.magic_handle = magic_open(MAGIC_NONE);
-  magic_load(tag_regexes.magic_handle, NULL);
+  memset(tag_regexes, 0, sizeof(struct tag_regexes));
+  tag_regexes->magic_handle = magic_open(MAGIC_NONE);
+  magic_load(tag_regexes->magic_handle, NULL);
 
   while (1) {
     int this_option_optind = optind ? optind : 1;
@@ -65,22 +63,22 @@ parse_command_line(int argc, char *argv[])
     case 0:
       //      printf("option %s", long_options[option_index].name);
       if (!strcmp(long_options[option_index].name, "composer")) {
-	tag_regexes.composer_regex = strdup(optarg);
+	tag_regexes->composer_regex = strdup(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "orig-artist")) {
-	tag_regexes.orig_artist_regex = strdup(optarg);
+	tag_regexes->orig_artist_regex = strdup(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "track")) {
-	tag_regexes.track_regex = strdup(optarg);
+	tag_regexes->track_regex = strdup(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "copyright")) {
-	tag_regexes.copyright_regex = strdup(optarg);
+	tag_regexes->copyright_regex = strdup(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "url")) {
-	tag_regexes.url_regex = strdup(optarg);
+	tag_regexes->url_regex = strdup(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "encoded-by")) {
-	tag_regexes.encoded_by_regex = strdup(optarg);
+	tag_regexes->encoded_by_regex = strdup(optarg);
       }
 
       if (optarg) {
@@ -90,27 +88,27 @@ parse_command_line(int argc, char *argv[])
       break;
 
     case 't':
-      tag_regexes.title_regex = strdup(optarg);
+      tag_regexes->title_regex = strdup(optarg);
       break;
 
     case 'a':
-      tag_regexes.artist_regex = strdup(optarg);
+      tag_regexes->artist_regex = strdup(optarg);
       break;
 
     case 'l':
-      tag_regexes.album_regex = strdup(optarg);
+      tag_regexes->album_regex = strdup(optarg);
       break;
 
     case 'y':
-      tag_regexes.year_regex = strdup(optarg);
+      tag_regexes->year_regex = strdup(optarg);
       break;
 
     case 'g':
-      tag_regexes.genre_regex = strdup(optarg);
+      tag_regexes->genre_regex = strdup(optarg);
       break;
 
     case 'c':
-      tag_regexes.comment_regex = strdup(optarg);
+      tag_regexes->comment_regex = strdup(optarg);
       break;
 
     case '?':
@@ -127,19 +125,19 @@ int
 main(int argc, char *argv[])
 {
   int ret;
-  
+  struct tag_regexes tag_regexes_struct;  
   mtrace();
-  ret = parse_command_line(argc, argv);
+  ret = parse_command_line(argc, argv, &tag_regexes_struct);
   if (optind < argc) {
     while (optind < argc) {
       //printf("%s ", argv[optind++]);
-      processFile(argv[optind++], &tag_regexes);
+      processFile(argv[optind++], &tag_regexes_struct);
     }
   }
   else {
     printf("No files!\n");
     ret = EXIT_FAILURE;
   }
-  free_tag_regexes();
+  free_tag_regexes(&tag_regexes_struct);
   return ret;
 }
