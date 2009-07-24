@@ -41,7 +41,6 @@ initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
   struct id3_frame *frame;
   id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
   if (!id3_file) {
-    fprintf(stderr, "Error reading file %s\n", filename);
     return 0;
   }
   id3_tag = id3_file_tag(id3_file);
@@ -121,7 +120,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
   const char *desc = magic_file(tag_regexes->magic_handle, filename);
 
   if (err = magic_error(tag_regexes->magic_handle)) {
-    printf("%s\n", err);
+    fprintf(stderr, "%s\n", err);
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "MPEG ADTS, layer III")) {
     struct id3_file *id3_file = initialize_mp3(filename, &media_file_tags);
