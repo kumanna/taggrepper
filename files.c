@@ -33,16 +33,11 @@ static id3_utf8_t
 /* Initalize the MP3 file. Stores tag values in the media_file_tags
    structure. */
 static int
-initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
+initialize_mp3(const struct id3_file *id3_file, struct media_file_tags *media_file_tags)
 {
-  struct id3_file *id3_file;  
   struct id3_tag *id3_tag;
-
   struct id3_frame *frame;
-  id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
-  if (!id3_file) {
-    return 0;
-  }
+
   id3_tag = id3_file_tag(id3_file);
 
   /* Store the tag, if it exists. Else store NULL, so that we can
@@ -70,8 +65,6 @@ initialize_mp3(const char *filename, struct media_file_tags *media_file_tags)
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_ENCODED_BY, 0);   
   media_file_tags->encoded_by = frame ? mp3tag_from_frame(frame) : NULL;
-
-  id3_file_close(id3_file);
 
   return 1;
 }
@@ -147,8 +140,11 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     fprintf(stderr, "%s\n", err);
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "MPEG ADTS, layer III")) {
-    if (initialize_mp3(filename, &media_file_tags)) {
+    struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
+    if (id3_file) {
+      initialize_mp3(id3_file, &media_file_tags);
       free_media_tags(&media_file_tags);
+      id3_file_close(id3_file);
     }
     else {
       fprintf(stderr, "Error reading file %s\n", filename);
