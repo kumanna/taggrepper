@@ -6,6 +6,7 @@
 #include <mcheck.h>
 
 #include "taggrep.h"
+#include "files.h"
 
 /* This function releases the memory allocated on the heap for storing
    the regular expressions. The magic handle is also closed. */
