@@ -93,8 +93,8 @@ free_media_tags(struct media_file_tags *media_file_tags)
  
 
 /* TODO */
-int
-display_oggvorbis_title(const char *filename)
+static int
+initialize_oggvorbis(const char *filename, struct media_file_tags *media_file_tags)
 {
   OggVorbis_File oggv_file;
   int i;
@@ -105,7 +105,30 @@ display_oggvorbis_title(const char *filename)
   }
 
   for (i = 0; i < oggv_file.vc->comments; ++i) {
-    printf("%s\n", oggv_file.vc->user_comments[i]);
+    if (!strncmp(oggv_file.vc->user_comments[i], "TITLE=", 6)) {
+      media_file_tags->title = strdup(oggv_file.vc->user_comments[i] + 6);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "ARTIST=", 7)) {
+      media_file_tags->artist = strdup(oggv_file.vc->user_comments[i] + 7);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "ALBUM=", 6)) {
+      media_file_tags->album = strdup(oggv_file.vc->user_comments[i] + 6);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "TRACK=", 6)) {
+      media_file_tags->track = strdup(oggv_file.vc->user_comments[i] + 6);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "YEAR=", 5)) {
+      media_file_tags->year = strdup(oggv_file.vc->user_comments[i] + 5);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "GENRE=", 6)) {
+      media_file_tags->genre = strdup(oggv_file.vc->user_comments[i] + 6);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "COMMENT=", 8)) {
+      media_file_tags->comment = strdup(oggv_file.vc->user_comments[i] + 8);
+    }
+    else if (!strncmp(oggv_file.vc->user_comments[i], "ENCODED-BY=", 11)) {
+      media_file_tags->encoded_by = strdup(oggv_file.vc->user_comments[i] + 11);
+    }
   }
   ov_clear(&oggv_file);
   return 1;
@@ -119,6 +142,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
   struct media_file_tags media_file_tags;
   const char *desc = magic_file(tag_regexes->magic_handle, filename);
 
+  memset(&media_file_tags, 0, sizeof(media_file_tags));
   if (err = magic_error(tag_regexes->magic_handle)) {
     fprintf(stderr, "%s\n", err);
   }
@@ -131,7 +155,12 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     }
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "Ogg data, Vorbis audio")) {
-    display_oggvorbis_title(filename);
+    if (initialize_oggvorbis(filename, &media_file_tags)) {
+      free_media_tags(&media_file_tags);
+    }
+    else {
+      fprintf(stderr, "Error reading file %s\n", filename);
+    }
   }
   return 1;
 }
