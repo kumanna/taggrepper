@@ -87,43 +87,36 @@ free_media_tags(struct media_file_tags *media_file_tags)
 
 /* TODO */
 static int
-initialize_oggvorbis(const char *filename, struct media_file_tags *media_file_tags)
+initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *media_file_tags)
 {
-  OggVorbis_File oggv_file;
   int i;
   
-  if (ov_fopen(filename, &oggv_file) < 0) {
-    printf("ERROR opening Ogg-Vorbis file!\n");
-    return 0;
-  }
-
-  for (i = 0; i < oggv_file.vc->comments; ++i) {
-    if (!strncmp(oggv_file.vc->user_comments[i], "TITLE=", 6)) {
-      media_file_tags->title = strdup(oggv_file.vc->user_comments[i] + 6);
+  for (i = 0; i < oggv_file->vc->comments; ++i) {
+    if (!strncmp(oggv_file->vc->user_comments[i], "TITLE=", 6)) {
+      media_file_tags->title = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "ARTIST=", 7)) {
-      media_file_tags->artist = strdup(oggv_file.vc->user_comments[i] + 7);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "ARTIST=", 7)) {
+      media_file_tags->artist = oggv_file->vc->user_comments[i] + 7;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "ALBUM=", 6)) {
-      media_file_tags->album = strdup(oggv_file.vc->user_comments[i] + 6);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "ALBUM=", 6)) {
+      media_file_tags->album = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "TRACK=", 6)) {
-      media_file_tags->track = strdup(oggv_file.vc->user_comments[i] + 6);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "TRACK=", 6)) {
+      media_file_tags->track = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "YEAR=", 5)) {
-      media_file_tags->year = strdup(oggv_file.vc->user_comments[i] + 5);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "YEAR=", 5)) {
+      media_file_tags->year = oggv_file->vc->user_comments[i] + 5;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "GENRE=", 6)) {
-      media_file_tags->genre = strdup(oggv_file.vc->user_comments[i] + 6);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "GENRE=", 6)) {
+      media_file_tags->genre = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "COMMENT=", 8)) {
-      media_file_tags->comment = strdup(oggv_file.vc->user_comments[i] + 8);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "COMMENT=", 8)) {
+      media_file_tags->comment = oggv_file->vc->user_comments[i] + 8;
     }
-    else if (!strncmp(oggv_file.vc->user_comments[i], "ENCODED-BY=", 11)) {
-      media_file_tags->encoded_by = strdup(oggv_file.vc->user_comments[i] + 11);
+    else if (!strncmp(oggv_file->vc->user_comments[i], "ENCODED-BY=", 11)) {
+      media_file_tags->encoded_by = oggv_file->vc->user_comments[i] + 11;
     }
   }
-  ov_clear(&oggv_file);
   return 1;
 }
 
@@ -151,8 +144,12 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     }
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "Ogg data, Vorbis audio")) {
-    if (initialize_oggvorbis(filename, &media_file_tags)) {
-      free_media_tags(&media_file_tags);
+    OggVorbis_File oggv_file;
+    if (ov_fopen(filename, &oggv_file) >= 0) {
+      initialize_oggvorbis(&oggv_file, &media_file_tags);
+      /* We don't free the media tags, since they just point to the
+         strings in the OggVorbis_File structure. */
+      ov_clear(&oggv_file);
     }
     else {
       fprintf(stderr, "Error reading file %s\n", filename);
