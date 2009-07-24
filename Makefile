@@ -1,7 +1,7 @@
 all: taggrep
 
 LDFLAGS += -lmagic -lid3tag -lvorbisfile
-CFLAGS += -ggdb
+CFLAGS += -ggdb -Wall
 
 taggrep: taggrep.o files.o
 

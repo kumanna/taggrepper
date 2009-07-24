@@ -43,28 +43,28 @@ initialize_mp3(const struct id3_file *id3_file, struct media_file_tags *media_fi
   /* Store the tag, if it exists. Else store NULL, so that we can
      happily free these later. */
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_TITLE, 0);   
-  media_file_tags->title = (frame) ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->title = (frame) ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_ARTIST, 0);   
-  media_file_tags->artist = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->artist = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_ALBUM, 0);   
-  media_file_tags->album = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->album = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_TRACK, 0);   
-  media_file_tags->track = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->track = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_YEAR, 0);   
-  media_file_tags->year = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->year = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_GENRE, 0);   
-  media_file_tags->genre = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->genre = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_COMMENT, 0);   
-  media_file_tags->comment = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->comment = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_ENCODED_BY, 0);   
-  media_file_tags->encoded_by = frame ? mp3tag_from_frame(frame) : NULL;
+  media_file_tags->encoded_by = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   return 1;
 }
@@ -129,10 +129,10 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
   const char *desc = magic_file(tag_regexes->magic_handle, filename);
 
   memset(&media_file_tags, 0, sizeof(media_file_tags));
-  if (err = magic_error(tag_regexes->magic_handle)) {
+  if ((err = magic_error(tag_regexes->magic_handle))) {
     fprintf(stderr, "%s\n", err);
   }
-  else if (strstr(magic_file(tag_regexes->magic_handle, filename), "MPEG ADTS, layer III")) {
+  else if (strstr(desc, "MPEG ADTS, layer III")) {
     struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
@@ -143,7 +143,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
       fprintf(stderr, "Error reading file %s\n", filename);
     }
   }
-  else if (strstr(magic_file(tag_regexes->magic_handle, filename), "Ogg data, Vorbis audio")) {
+  else if (strstr(desc, "Ogg data, Vorbis audio")) {
     OggVorbis_File oggv_file;
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
