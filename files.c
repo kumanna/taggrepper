@@ -123,8 +123,12 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     fprintf(stderr, "%s\n", err);
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "MPEG ADTS, layer III")) {
-    struct id3_file *id3_file = initialize_mp3(filename, &media_file_tags);
-    free_media_tags(&media_file_tags);
+    if (initialize_mp3(filename, &media_file_tags)) {
+      free_media_tags(&media_file_tags);
+    }
+    else {
+      fprintf(stderr, "Error reading file %s\n", filename);
+    }
   }
   else if (strstr(magic_file(tag_regexes->magic_handle, filename), "Ogg data, Vorbis audio")) {
     display_oggvorbis_title(filename);
