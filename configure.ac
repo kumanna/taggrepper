@@ -11,6 +11,9 @@ AC_CONFIG_FILES([Makefile src/Makefile])
 AC_CHECK_HEADERS([id3tag.h], AC_CHECK_LIB([id3tag], [id3_file_open], , [AC_MSG_ERROR(Can't find libid3tag)])
 , [AC_MSG_ERROR(Can't find id3tag.h)])
 
+AC_CHECK_HEADERS([pcre.h], AC_CHECK_LIB([pcre], [id3_file_open], , [AC_MSG_ERROR(Can't find libpcre)])
+, [AC_MSG_ERROR(Can't find pcre.h)])
+
 
 dnl vorbisfile
 have_libvorbisfile=no
@@ -28,37 +31,6 @@ have_libvorbisfile=yes ])
 ])
 fi
 
-dnl pcre
-have_libpcre=no
-AC_ARG_WITH(libpcre,
-
-AS_HELP_STRING([--with-libpcre],[use libpcre library]),
-[use_libpcre=$withval],
-[use_libpcre=yes])
-
-if test "$use_libpcre" = "yes"; then
-AC_CHECK_HEADER(pcre.h,
-[AC_CHECK_LIB(pcre,pcre_compile,[AC_DEFINE(HAVE_LIBPCRE, 1, [Define to 1 if your system supports libpcre])
-LIBS="$LIBS -lpcre"
-have_libpcre=yes ])
-])
-fi
-
-dnl libmagic
-have_libmagic=no
-AC_ARG_WITH(libmagic,
-
-AS_HELP_STRING([--with-libmagic],[use libmagic library]),
-[use_libmagic=$withval],
-[use_libmagic=yes])
-
-if test "$use_libmagic" = "yes"; then
-AC_CHECK_HEADER(magic.h,
-[AC_CHECK_LIB(magic,magic_open,[AC_DEFINE(HAVE_LIBMAGIC, 1, [Define to 1 if your system supports libmagic])
-LIBS="$LIBS -lmagic"
-have_libmagic=yes ])
-])
-fi
 
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
