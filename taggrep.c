@@ -63,6 +63,9 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
     if (c == -1)
       break;
 
+    if (!optarg) {
+      return 0;
+    }
     re = initialize_regexp(optarg);
     if (!re) {
       return 0;
@@ -116,10 +119,12 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       break;
 
     case '?':
+      return 0;
       break;
 
     default:
       printf("Error processing command line arguments: getopt returned character code 0%o ??\n", c);
+      return 0;
     }
   }
   return 1;

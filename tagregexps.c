@@ -32,6 +32,10 @@ match_string(pcre *re, const char *subject)
   if (!re) {
     return 1;
   }
+  /* but if the string is blank, fail */
+  if (!subject) {
+    return 0;
+  }
 
   rc = pcre_exec(re, NULL, subject, strlen(subject), 0, 0, ovector, 3);
   return (rc >= 0 && rc != PCRE_ERROR_NOMATCH);
