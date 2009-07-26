@@ -39,6 +39,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
 
   while (1) {
     int option_index = 0;
+    pcre *re;
 
     /* TODO: Is this list of tags good enough? More? Less? */
     static struct option long_options[] = {
@@ -62,52 +63,56 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
     if (c == -1)
       break;
 
+    re = initialize_regexp(optarg);
+    if (!re) {
+      return 0;
+    }
     switch (c) {
     case 0:
       /* Check if a known long option was specified */
       if (!strcmp(long_options[option_index].name, "composer")) {
-	tag_regexes->composer_regex = initialize_regexp(optarg);
+	tag_regexes->composer_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "orig-artist")) {
-	tag_regexes->orig_artist_regex = initialize_regexp(optarg);
+	tag_regexes->orig_artist_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "track")) {
-	tag_regexes->track_regex = initialize_regexp(optarg);
+	tag_regexes->track_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "copyright")) {
-	tag_regexes->copyright_regex = initialize_regexp(optarg);
+	tag_regexes->copyright_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "url")) {
-	tag_regexes->url_regex = initialize_regexp(optarg);
+	tag_regexes->url_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "encoded-by")) {
-	tag_regexes->encoded_by_regex = initialize_regexp(optarg);
+	tag_regexes->encoded_by_regex = re;
       }
       break;
 
     /* Handle short options */
     case 't':
-      tag_regexes->title_regex = initialize_regexp(optarg);
+      tag_regexes->title_regex = re;
       break;
 
     case 'a':
-      tag_regexes->artist_regex = initialize_regexp(optarg);
+      tag_regexes->artist_regex = re;
       break;
 
     case 'l':
-      tag_regexes->album_regex = initialize_regexp(optarg);
+      tag_regexes->album_regex = re;
       break;
 
     case 'y':
-      tag_regexes->year_regex = initialize_regexp(optarg);
+      tag_regexes->year_regex = re;
       break;
 
     case 'g':
-      tag_regexes->genre_regex = initialize_regexp(optarg);
+      tag_regexes->genre_regex = re;
       break;
 
     case 'c':
-      tag_regexes->comment_regex = initialize_regexp(optarg);
+      tag_regexes->comment_regex = re;
       break;
 
     case '?':
@@ -117,7 +122,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       printf("Error processing command line arguments: getopt returned character code 0%o ??\n", c);
     }
   }
-  return EXIT_SUCCESS;
+  return 1;
 }
 
 int
@@ -129,6 +134,10 @@ main(int argc, char *argv[])
   mtrace();
   ret = parse_command_line(argc, argv, &tag_regexes_struct);
 
+  if (!ret) {
+    fprintf(stderr, "Exiting with error!\n");
+    return 1;
+  }
   /* We interpret non-arguments as file names */
   if (optind < argc) {
     while (optind < argc) {

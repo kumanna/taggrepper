@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "tagregexps.h"
 
 pcre *
@@ -12,6 +13,6 @@ initialize_regexp(const char *regexp_str)
     return re;
   }
 
-  fprintf("ERROR: compiling regular expression at offset %d: %s\n", erroroffset, error);
+  fprintf(stderr, "ERROR: compiling regular expression at offset %d: %s\n", erroroffset, error);
   return NULL;
 }
