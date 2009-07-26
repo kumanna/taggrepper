@@ -8,6 +8,9 @@
 #include "common.h"
 #include "tagregexps.h"
 
+/* Detect if some help was displayed, to avoid error messages */
+#define HELP_DISPLAYED 2
+
 /* This function releases the PCRE regular expressions. The magic
    handle is also closed. */
 static void
@@ -29,6 +32,38 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
     magic_close(tag_regexes->magic_handle);
   }
 #endif
+}
+
+static void
+help_message(const char *command)
+{
+  printf("Usage: %s [--tag-label regexp]... [FILE/DIRECTORY]...\n"
+"Perform a regular expression search on the tags of specified media files.\n\n"
+"Mandatory arguments to long options are mandatory for short options too.\n"
+"  -t, --title=REGEXP\t\tMatch the title tag against REGEXP\n"
+"  -a, --artist=REGEXP\t\tMatch the artist tag against REGEXP\n"
+"  -l, --album,=REGEXP\t\tMatch the album, tag against REGEXP\n"
+"  -y, --year, =REGEXP\t\tMatch the year  tag against REGEXP\n"
+"  -g, --genre,=REGEXP\t\tMatch the genre tag against REGEXP\n"
+"  -c, --comment=REGEXP\t\tMatch the comment tag against REGEXP\n"
+"      --track=REGEXP\t\tMatch the track tag against REGEXP\n"
+"  -c, --composer=REGEXP\t\tMatch the composer tag against REGEXP\n"
+"  -o, --orig-artist=REGEXP\tMatch the original artist tag against REGEXP\n"
+"  -c, --copyright=REGEXP\tMatch the copyright tag against REGEXP\n"
+"  -u, --url=REGEXP\t\tMatch the URL tag against REGEXP\n"
+"  -e, --encode=REGEXP\t\tMatch the encode tag against REGEXP\n"
+"\n"
+#ifdef HAVE_LIBMAGIC
+"  -u, --use-magic\t\tUse libmagic to find file type, irrespective of extension\n"
+#endif
+"  -r, --recursive\t\tSearch directories recursively\n"
+"  -v, --version\t\t\tDisplay version and exit\n"
+"  -h, --help\t\t\tDisplay this help message\n"
+"\n"
+"All regular expressions are PCRE regular expressions. Refer to the\n"
+"PCRE documentation for details.\n"
+"Report comments and bugs to %s\n"
+	 , command, PACKAGE_BUGREPORT);
 }
 
 /* Parse the command line options and process each file */
@@ -62,14 +97,16 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
       {"use-magic", 0, 0, 'm'},
 #endif
       {"recursive", 0, 0, 'r'},
+      {"version", 0, 0, 'v'},
+      {"help", 0, 0, 'h'},
       {0, 0, 0, 0}
     };
 
 #ifdef HAVE_LIBMAGIC
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:mr",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:mrvh",
 		    long_options, &option_index);
 #else
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:r",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:rvh",
 		    long_options, &option_index);
 #endif
     if (c == -1) {
@@ -85,6 +122,14 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
     else if (c == 'r') {
       *recursive = 1;
       continue;
+    }
+    else if (c == 'v') {
+      printf(VERSION_STRING, PACKAGE_NAME, PACKAGE_VERSION);
+      return HELP_DISPLAYED;
+    }
+    else if (c == 'h') {
+      help_message(argv[0]);
+      return HELP_DISPLAYED;
     }
 
     if (!optarg) {
@@ -181,7 +226,10 @@ main(int argc, char *argv[])
     }
   }
   else {
-    printf("No files!\n");
+    if (ret != HELP_DISPLAYED) {
+      printf("No files specified\n");
+      printf("Please use the --help option for usage information.\n");
+    }
     ret = 0;
   }
   free_tag_regexes(&tag_regexes_struct);
