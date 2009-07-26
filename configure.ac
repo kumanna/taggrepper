@@ -6,21 +6,11 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 AC_CHECK_FUNCS([memset strcasecmp strstr])
 AC_CONFIG_FILES([Makefile src/Makefile])
 
-dnl id3tag
-have_libid3tag=no
-AC_ARG_WITH(libid3tag,
 
-AS_HELP_STRING([--with-libid3tag],[use libid3tag library]),
-[use_libid3tag=$withval],
-[use_libid3tag=yes])
 
-if test "$use_libid3tag" = "yes"; then
-AC_CHECK_HEADER(id3tag.h,
-[AC_CHECK_LIB(id3tag,id3_file_open,[AC_DEFINE(HAVE_LIBID3TAG, 1, [Define to 1 if your system supports libid3tag])
-LIBS="$LIBS -lid3tag"
-have_libid3tag=yes ])
-])
-fi
+AC_CHECK_HEADERS([id3tag.h], AC_CHECK_LIB([id3tag], [id3_file_open], , [AC_MSG_ERROR(Can't find libid3tag)])
+, [AC_MSG_ERROR(Can't find id3tag.h)])
+
 
 dnl vorbisfile
 have_libvorbisfile=no

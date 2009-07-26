@@ -723,7 +723,6 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
-with_libid3tag
 with_libvorbisfile
 with_libpcre
 with_libmagic
@@ -1369,7 +1368,6 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-libid3tag        use libid3tag library
   --with-libvorbisfile    use libvorbisfile library
   --with-libpcre          use libpcre library
   --with-libmagic         use libmagic library
@@ -4308,29 +4306,26 @@ done
 ac_config_files="$ac_config_files Makefile src/Makefile"
 
 
-have_libid3tag=no
-
-# Check whether --with-libid3tag was given.
-if test "${with_libid3tag+set}" = set; then
-  withval=$with_libid3tag; use_libid3tag=$withval
-else
-  use_libid3tag=yes
-fi
 
 
-if test "$use_libid3tag" = "yes"; then
-if test "${ac_cv_header_id3tag_h+set}" = set; then
-  { $as_echo "$as_me:$LINENO: checking for id3tag.h" >&5
-$as_echo_n "checking for id3tag.h... " >&6; }
-if test "${ac_cv_header_id3tag_h+set}" = set; then
+
+for ac_header in id3tag.h
+do
+as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
   $as_echo_n "(cached) " >&6
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_id3tag_h" >&5
-$as_echo "$ac_cv_header_id3tag_h" >&6; }
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
 else
   # Is the header compilable?
-{ $as_echo "$as_me:$LINENO: checking id3tag.h usability" >&5
-$as_echo_n "checking id3tag.h usability... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking $ac_header usability" >&5
+$as_echo_n "checking $ac_header usability... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
@@ -4338,7 +4333,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 $ac_includes_default
-#include <id3tag.h>
+#include <$ac_header>
 _ACEOF
 rm -f conftest.$ac_objext
 if { (ac_try="$ac_compile"
@@ -4371,15 +4366,15 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 $as_echo "$ac_header_compiler" >&6; }
 
 # Is the header present?
-{ $as_echo "$as_me:$LINENO: checking id3tag.h presence" >&5
-$as_echo_n "checking id3tag.h presence... " >&6; }
+{ $as_echo "$as_me:$LINENO: checking $ac_header presence" >&5
+$as_echo_n "checking $ac_header presence... " >&6; }
 cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <id3tag.h>
+#include <$ac_header>
 _ACEOF
 if { (ac_try="$ac_cpp conftest.$ac_ext"
 case "(($ac_try" in
@@ -4413,25 +4408,25 @@ $as_echo "$ac_header_preproc" >&6; }
 # So?  What about this header?
 case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
   yes:no: )
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: accepted by the compiler, rejected by the preprocessor!" >&5
-$as_echo "$as_me: WARNING: id3tag.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: proceeding with the compiler's result" >&5
-$as_echo "$as_me: WARNING: id3tag.h: proceeding with the compiler's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
     ac_header_preproc=yes
     ;;
   no:yes:* )
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: present but cannot be compiled" >&5
-$as_echo "$as_me: WARNING: id3tag.h: present but cannot be compiled" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h:     check for missing prerequisite headers?" >&5
-$as_echo "$as_me: WARNING: id3tag.h:     check for missing prerequisite headers?" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: see the Autoconf documentation" >&5
-$as_echo "$as_me: WARNING: id3tag.h: see the Autoconf documentation" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h:     section \"Present But Cannot Be Compiled\"" >&5
-$as_echo "$as_me: WARNING: id3tag.h:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: proceeding with the preprocessor's result" >&5
-$as_echo "$as_me: WARNING: id3tag.h: proceeding with the preprocessor's result" >&2;}
-    { $as_echo "$as_me:$LINENO: WARNING: id3tag.h: in the future, the compiler will take precedence" >&5
-$as_echo "$as_me: WARNING: id3tag.h: in the future, the compiler will take precedence" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
     ( cat <<\_ASBOX
 ## ---------------------------------------- ##
 ## Report this to a.kumar@alumni.iitm.ac.in ##
@@ -4440,19 +4435,27 @@ _ASBOX
      ) | sed "s/^/$as_me: WARNING:     /" >&2
     ;;
 esac
-{ $as_echo "$as_me:$LINENO: checking for id3tag.h" >&5
-$as_echo_n "checking for id3tag.h... " >&6; }
-if test "${ac_cv_header_id3tag_h+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
   $as_echo_n "(cached) " >&6
 else
-  ac_cv_header_id3tag_h=$ac_header_preproc
+  eval "$as_ac_Header=\$ac_header_preproc"
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_id3tag_h" >&5
-$as_echo "$ac_cv_header_id3tag_h" >&6; }
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
 
 fi
-if test "x$ac_cv_header_id3tag_h" = x""yes; then
-  { $as_echo "$as_me:$LINENO: checking for id3_file_open in -lid3tag" >&5
+as_val=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+   if test "x$as_val" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+{ $as_echo "$as_me:$LINENO: checking for id3_file_open in -lid3tag" >&5
 $as_echo_n "checking for id3_file_open in -lid3tag... " >&6; }
 if test "${ac_cv_lib_id3tag_id3_file_open+set}" = set; then
   $as_echo_n "(cached) " >&6
@@ -4518,20 +4521,28 @@ fi
 { $as_echo "$as_me:$LINENO: result: $ac_cv_lib_id3tag_id3_file_open" >&5
 $as_echo "$ac_cv_lib_id3tag_id3_file_open" >&6; }
 if test "x$ac_cv_lib_id3tag_id3_file_open" = x""yes; then
-
-cat >>confdefs.h <<\_ACEOF
+  cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBID3TAG 1
 _ACEOF
 
-LIBS="$LIBS -lid3tag"
-have_libid3tag=yes
+  LIBS="-lid3tag $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: Can't find libid3tag" >&5
+$as_echo "$as_me: error: Can't find libid3tag" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
+else
+  { { $as_echo "$as_me:$LINENO: error: Can't find id3tag.h" >&5
+$as_echo "$as_me: error: Can't find id3tag.h" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
+done
 
-fi
+
 
 have_libvorbisfile=no
 

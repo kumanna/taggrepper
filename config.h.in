@@ -1,9 +1,12 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the <id3tag.h> header file. */
+#undef HAVE_ID3TAG_H
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if your system supports libid3tag */
+/* Define to 1 if you have the `id3tag' library (-lid3tag). */
 #undef HAVE_LIBID3TAG
 
 /* Define to 1 if your system supports libmagic */
