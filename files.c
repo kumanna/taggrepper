@@ -4,6 +4,7 @@
 #include <id3tag.h>
 #include <vorbis/vorbisfile.h>
 #include "files.h"
+#include "tagregexps.h"
 
 /* Extract tag from MP3 frame. This code closely follows
    the libid3tag example. */
@@ -136,6 +137,9 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
+      if (match_tag_regexps(&media_file_tags, tag_regexes)) {
+	printf("%s\n", filename);
+      }
       free_media_tags(&media_file_tags);
       id3_file_close(id3_file);
     }
@@ -147,6 +151,9 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     OggVorbis_File oggv_file;
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
+      if (match_tag_regexps(&media_file_tags, tag_regexes)) {
+	printf("%s\n", filename);
+      }
       /* We don't free the media tags, since they just point to the
          strings in the OggVorbis_File structure. */
       ov_clear(&oggv_file);
@@ -155,5 +162,6 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
       fprintf(stderr, "Error reading file %s\n", filename);
     }
   }
+
   return 1;
 }

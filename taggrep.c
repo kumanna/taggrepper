@@ -5,11 +5,11 @@
 
 #include <mcheck.h>
 
-#include "taggrep.h"
-#include "files.h"
+#include "common.h"
+#include "tagregexps.h"
 
-/* This function releases the memory allocated on the heap for storing
-   the regular expressions. The magic handle is also closed. */
+/* This function releases the PCRE regular expressions. The magic
+   handle is also closed. */
 static void
 free_tag_regexes(struct tag_regexes *tag_regexes)
 {
