@@ -24,7 +24,9 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
   pcre_free(tag_regexes->copyright_regex);
   pcre_free(tag_regexes->url_regex);
   pcre_free(tag_regexes->encoded_by_regex);
-  magic_close(tag_regexes->magic_handle);
+  if (tag_regexes->magic_handle) {
+    magic_close(tag_regexes->magic_handle);
+  }
 }
 
 /* Parse the command line options and process each file */
@@ -34,8 +36,6 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
   int c;
 
   memset(tag_regexes, 0, sizeof(struct tag_regexes));
-  tag_regexes->magic_handle = magic_open(MAGIC_NONE);
-  magic_load(tag_regexes->magic_handle, NULL);
 
   while (1) {
     int option_index = 0;
@@ -55,13 +55,20 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       {"copyright", 1, 0, 0},
       {"url", 1, 0, 0},
       {"encoded-by", 1, 0, 0},
+      {"use-magic", 0, 0, 'm'},
       {0, 0, 0, 0}
     };
 
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:m",
 		    long_options, &option_index);
-    if (c == -1)
+    if (c == -1) {
       break;
+    }
+    else if (c == 'm') {
+      tag_regexes->magic_handle = magic_open(MAGIC_NONE);
+      magic_load(tag_regexes->magic_handle, NULL);
+      continue;
+    }
 
     if (!optarg) {
       return 0;
@@ -137,7 +144,7 @@ main(int argc, char *argv[])
   /* Structure possessing the regular expressions */
   struct tag_regexes tag_regexes_struct;  
   mtrace();
-  ret = parse_command_line(argc, argv, &tag_regexes_struct) > 0 ? 0 : 1;
+  ret = parse_command_line(argc, argv, &tag_regexes_struct);
 
   if (!ret) {
     fprintf(stderr, "Exiting with error!\n");
@@ -151,8 +158,8 @@ main(int argc, char *argv[])
   }
   else {
     printf("No files!\n");
-    ret = 1;
+    ret = 0;
   }
   free_tag_regexes(&tag_regexes_struct);
-  return ret;
+  return ret == 0;
 }

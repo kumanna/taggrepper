@@ -6,6 +6,8 @@
 #include "files.h"
 #include "tagregexps.h"
 
+enum TG_FILETYPE {TG_UNKNOWN = 0, TG_MP3, TG_OGGVORBIS};
+
 /* Extract tag from MP3 frame. This code closely follows
    the libid3tag example. */
 static id3_utf8_t
@@ -121,19 +123,53 @@ initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *me
   return 1;
 }
 
+static enum TG_FILETYPE
+detect_filetype(const char *filename, magic_t magic_handle)
+{
+  /* Check if we are doing smart detection (magic) or file extension
+     based detection. */
+  const char *extension;
+  const char *err;
+  int len;
+  if (magic_handle) {
+    const char *desc = magic_file(magic_handle, filename);    
+    if ((err = magic_error(magic_handle))) {
+      fprintf(stderr, "%s\n", err);
+      return TG_UNKNOWN;
+    }
+    if (strstr(desc, "MPEG ADTS, layer III")) {
+      return TG_MP3;
+    }
+    else if (strstr(desc, "Ogg data, Vorbis audio")) {
+      return TG_OGGVORBIS;
+    }
+    else {
+      return TG_UNKNOWN;
+    }
+  }
+  /* Fall back to file extension based detection. */
+  len = strlen(filename);
+  extension = filename + len - 4;
+  if (!strcasecmp(extension, ".mp3")) {
+    return TG_MP3;
+  }
+  else if (!strcasecmp(extension, ".ogg")) {
+    return TG_OGGVORBIS;
+  }
+  return TG_UNKNOWN;
+}
+
 /* Process one media file. */
 int
 processFile(const char *filename, struct tag_regexes *tag_regexes)
 {
-  const char *err;
   struct media_file_tags media_file_tags;
-  const char *desc = magic_file(tag_regexes->magic_handle, filename);
+  enum TG_FILETYPE file_type;
 
   memset(&media_file_tags, 0, sizeof(media_file_tags));
-  if ((err = magic_error(tag_regexes->magic_handle))) {
-    fprintf(stderr, "%s\n", err);
-  }
-  else if (strstr(desc, "MPEG ADTS, layer III")) {
+  file_type = detect_filetype(filename, tag_regexes->magic_handle);
+
+  if (file_type == TG_MP3) {
     struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
@@ -147,7 +183,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
       fprintf(stderr, "Error reading file %s\n", filename);
     }
   }
-  else if (strstr(desc, "Ogg data, Vorbis audio")) {
+  else if (file_type == TG_OGGVORBIS) {
     OggVorbis_File oggv_file;
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
