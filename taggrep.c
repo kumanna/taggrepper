@@ -31,10 +31,11 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
 
 /* Parse the command line options and process each file */
 static int
-parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
+parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int *recursive)
 {
   int c;
 
+  *recursive = 0;
   memset(tag_regexes, 0, sizeof(struct tag_regexes));
 
   while (1) {
@@ -56,10 +57,11 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
       {"url", 1, 0, 0},
       {"encoded-by", 1, 0, 0},
       {"use-magic", 0, 0, 'm'},
+      {"recursive", 0, 0, 'r'},
       {0, 0, 0, 0}
     };
 
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:m",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:mr",
 		    long_options, &option_index);
     if (c == -1) {
       break;
@@ -67,6 +69,9 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
     else if (c == 'm') {
       tag_regexes->magic_handle = magic_open(MAGIC_NONE);
       magic_load(tag_regexes->magic_handle, NULL);
+      continue;
+    } else if (c == 'r') {
+      *recursive = 1;
       continue;
     }
 
@@ -143,8 +148,10 @@ main(int argc, char *argv[])
   int ret;
   /* Structure possessing the regular expressions */
   struct tag_regexes tag_regexes_struct;  
+  int recursive;
+
   mtrace();
-  ret = parse_command_line(argc, argv, &tag_regexes_struct);
+  ret = parse_command_line(argc, argv, &tag_regexes_struct, &recursive);
 
   if (!ret) {
     fprintf(stderr, "Exiting with error!\n");
@@ -153,7 +160,12 @@ main(int argc, char *argv[])
   /* We interpret non-arguments as file names */
   if (optind < argc) {
     while (optind < argc) {
-      processFile(argv[optind++], &tag_regexes_struct);
+      if (!recursive) {
+	processFile(argv[optind++], &tag_regexes_struct);
+      }
+      else {
+	processFile_recursive(argv[optind++], &tag_regexes_struct);
+      }
     }
   }
   else {

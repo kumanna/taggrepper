@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <id3tag.h>
 #include <vorbis/vorbisfile.h>
+#include <ftw.h>
+
 #include "files.h"
 #include "tagregexps.h"
 
@@ -199,5 +201,29 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     }
   }
 
+  return 1;
+}
+
+/* We copy the regular expressions, since FTW's callback function
+   cannot receive any custon data. */
+static struct tag_regexes *
+tag_regexes_copy;
+
+static int
+process_file_wrapper(const char *filename, const struct stat *sb, int tflag)
+{
+  if (tflag == FTW_F || tflag == FTW_SL) {
+    processFile(filename, tag_regexes_copy);
+  }
+  return 0;
+}
+
+int
+processFile_recursive(const char *filename, struct tag_regexes *tag_regexes)
+{
+  tag_regexes_copy = tag_regexes;
+  if (ftw(filename, process_file_wrapper, 20) == -1) {
+    fprintf(stderr, "Error traversing %s\n", filename);
+  }
   return 1;
 }

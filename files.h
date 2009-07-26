@@ -8,4 +8,6 @@
 int
 processFile(const char *, struct tag_regexes *);
 
+int
+processFile_recursive(const char *filename, struct tag_regexes *tag_regexes);
 #endif
