@@ -2,20 +2,21 @@
 #define TAGGREP_H
 
 #include <magic.h>
+#include "tagregexps.h"
 
 struct tag_regexes {
-  char *title_regex;
-  char *artist_regex;
-  char *album_regex;
-  char *year_regex;
-  char *genre_regex;
-  char *comment_regex;
-  char *track_regex;
-  char *composer_regex;
-  char *orig_artist_regex;
-  char *copyright_regex;
-  char *url_regex;
-  char *encoded_by_regex;
+  pcre *title_regex;
+  pcre *artist_regex;
+  pcre *album_regex;
+  pcre *year_regex;
+  pcre *genre_regex;
+  pcre *comment_regex;
+  pcre *track_regex;
+  pcre *composer_regex;
+  pcre *orig_artist_regex;
+  pcre *copyright_regex;
+  pcre *url_regex;
+  pcre *encoded_by_regex;
   magic_t magic_handle;
 };
 

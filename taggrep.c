@@ -13,17 +13,17 @@
 static void
 free_tag_regexes(struct tag_regexes *tag_regexes)
 {
-  free(tag_regexes->title_regex);
-  free(tag_regexes->artist_regex);
-  free(tag_regexes->album_regex);
-  free(tag_regexes->year_regex);
-  free(tag_regexes->genre_regex);
-  free(tag_regexes->comment_regex);
-  free(tag_regexes->composer_regex);
-  free(tag_regexes->orig_artist_regex);
-  free(tag_regexes->copyright_regex);
-  free(tag_regexes->url_regex);
-  free(tag_regexes->encoded_by_regex);
+  pcre_free(tag_regexes->title_regex);
+  pcre_free(tag_regexes->artist_regex);
+  pcre_free(tag_regexes->album_regex);
+  pcre_free(tag_regexes->year_regex);
+  pcre_free(tag_regexes->genre_regex);
+  pcre_free(tag_regexes->comment_regex);
+  pcre_free(tag_regexes->composer_regex);
+  pcre_free(tag_regexes->orig_artist_regex);
+  pcre_free(tag_regexes->copyright_regex);
+  pcre_free(tag_regexes->url_regex);
+  pcre_free(tag_regexes->encoded_by_regex);
   magic_close(tag_regexes->magic_handle);
 }
 
@@ -66,48 +66,48 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes)
     case 0:
       /* Check if a known long option was specified */
       if (!strcmp(long_options[option_index].name, "composer")) {
-	tag_regexes->composer_regex = strdup(optarg);
+	tag_regexes->composer_regex = initialize_regexp(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "orig-artist")) {
-	tag_regexes->orig_artist_regex = strdup(optarg);
+	tag_regexes->orig_artist_regex = initialize_regexp(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "track")) {
-	tag_regexes->track_regex = strdup(optarg);
+	tag_regexes->track_regex = initialize_regexp(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "copyright")) {
-	tag_regexes->copyright_regex = strdup(optarg);
+	tag_regexes->copyright_regex = initialize_regexp(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "url")) {
-	tag_regexes->url_regex = strdup(optarg);
+	tag_regexes->url_regex = initialize_regexp(optarg);
       }
       else if (!strcmp(long_options[option_index].name, "encoded-by")) {
-	tag_regexes->encoded_by_regex = strdup(optarg);
+	tag_regexes->encoded_by_regex = initialize_regexp(optarg);
       }
       break;
 
     /* Handle short options */
     case 't':
-      tag_regexes->title_regex = strdup(optarg);
+      tag_regexes->title_regex = initialize_regexp(optarg);
       break;
 
     case 'a':
-      tag_regexes->artist_regex = strdup(optarg);
+      tag_regexes->artist_regex = initialize_regexp(optarg);
       break;
 
     case 'l':
-      tag_regexes->album_regex = strdup(optarg);
+      tag_regexes->album_regex = initialize_regexp(optarg);
       break;
 
     case 'y':
-      tag_regexes->year_regex = strdup(optarg);
+      tag_regexes->year_regex = initialize_regexp(optarg);
       break;
 
     case 'g':
-      tag_regexes->genre_regex = strdup(optarg);
+      tag_regexes->genre_regex = initialize_regexp(optarg);
       break;
 
     case 'c':
-      tag_regexes->comment_regex = strdup(optarg);
+      tag_regexes->comment_regex = initialize_regexp(optarg);
       break;
 
     case '?':
