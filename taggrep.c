@@ -137,7 +137,7 @@ main(int argc, char *argv[])
   /* Structure possessing the regular expressions */
   struct tag_regexes tag_regexes_struct;  
   mtrace();
-  ret = parse_command_line(argc, argv, &tag_regexes_struct);
+  ret = parse_command_line(argc, argv, &tag_regexes_struct) > 0 ? 0 : 1;
 
   if (!ret) {
     fprintf(stderr, "Exiting with error!\n");
@@ -151,7 +151,7 @@ main(int argc, char *argv[])
   }
   else {
     printf("No files!\n");
-    ret = EXIT_FAILURE;
+    ret = 1;
   }
   free_tag_regexes(&tag_regexes_struct);
   return ret;
