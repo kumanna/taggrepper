@@ -90,7 +90,8 @@ free_media_tags(struct media_file_tags *media_file_tags)
 }
  
 
-/* TODO */
+#ifdef HAVE_LIBVORBISFILE
+/* Initialize Ogg Vorbis file */
 static int
 initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *media_file_tags)
 {
@@ -124,6 +125,7 @@ initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *me
   }
   return 1;
 }
+#endif /* HAVE_LIBVORBISFILE */
 
 static enum TG_FILETYPE
 detect_filetype_extension(const char *filename)
@@ -159,9 +161,11 @@ detect_filetype(const char *filename, magic_t magic_handle)
     if (strstr(desc, "MPEG ADTS, layer III")) {
       return TG_MP3;
     }
+#ifdef HAVE_LIBVORBISFILE
     else if (strstr(desc, "Ogg data, Vorbis audio")) {
       return TG_OGGVORBIS;
     }
+#endif
     else {
       return TG_UNKNOWN;
     }
@@ -198,6 +202,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
       fprintf(stderr, "Error reading file %s\n", filename);
     }
   }
+#ifdef HAVE_LIBVORBISFILE
   else if (file_type == TG_OGGVORBIS) {
     OggVorbis_File oggv_file;
     if (ov_fopen(filename, &oggv_file) >= 0) {
@@ -213,7 +218,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
       fprintf(stderr, "Error reading file %s\n", filename);
     }
   }
-
+#endif
   return 1;
 }
 
