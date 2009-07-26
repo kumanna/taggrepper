@@ -24,9 +24,11 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
   pcre_free(tag_regexes->copyright_regex);
   pcre_free(tag_regexes->url_regex);
   pcre_free(tag_regexes->encoded_by_regex);
+#ifdef HAVE_LIBMAGIC
   if (tag_regexes->magic_handle) {
     magic_close(tag_regexes->magic_handle);
   }
+#endif
 }
 
 /* Parse the command line options and process each file */
@@ -56,21 +58,31 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
       {"copyright", 1, 0, 0},
       {"url", 1, 0, 0},
       {"encoded-by", 1, 0, 0},
+#ifdef HAVE_LIBMAGIC
       {"use-magic", 0, 0, 'm'},
+#endif
       {"recursive", 0, 0, 'r'},
       {0, 0, 0, 0}
     };
 
+#ifdef HAVE_LIBMAGIC
     c = getopt_long(argc, argv, "t:a:l:y:g:c:mr",
 		    long_options, &option_index);
+#else
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:r",
+		    long_options, &option_index);
+#endif
     if (c == -1) {
       break;
     }
+#ifdef HAVE_LIBMAGIC
     else if (c == 'm') {
       tag_regexes->magic_handle = magic_open(MAGIC_NONE);
       magic_load(tag_regexes->magic_handle, NULL);
       continue;
-    } else if (c == 'r') {
+    }
+#endif
+    else if (c == 'r') {
       *recursive = 1;
       continue;
     }

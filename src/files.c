@@ -126,13 +126,30 @@ initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *me
 }
 
 static enum TG_FILETYPE
+detect_filetype_extension(const char *filename)
+{
+  /* Fall back to file extension based detection. */
+  const char *extension;
+  int len;
+  len = strlen(filename);
+  extension = filename + len - 4;
+  if (!strcasecmp(extension, ".mp3")) {
+    return TG_MP3;
+  }
+  else if (!strcasecmp(extension, ".ogg")) {
+    return TG_OGGVORBIS;
+  }
+  return TG_UNKNOWN;
+
+}
+
+#ifdef HAVE_LIBMAGIC
+static enum TG_FILETYPE
 detect_filetype(const char *filename, magic_t magic_handle)
 {
   /* Check if we are doing smart detection (magic) or file extension
      based detection. */
-  const char *extension;
   const char *err;
-  int len;
   if (magic_handle) {
     const char *desc = magic_file(magic_handle, filename);    
     if ((err = magic_error(magic_handle))) {
@@ -149,17 +166,9 @@ detect_filetype(const char *filename, magic_t magic_handle)
       return TG_UNKNOWN;
     }
   }
-  /* Fall back to file extension based detection. */
-  len = strlen(filename);
-  extension = filename + len - 4;
-  if (!strcasecmp(extension, ".mp3")) {
-    return TG_MP3;
-  }
-  else if (!strcasecmp(extension, ".ogg")) {
-    return TG_OGGVORBIS;
-  }
-  return TG_UNKNOWN;
+  return detect_filetype_extension(filename);
 }
+#endif
 
 /* Process one media file. */
 int
@@ -169,7 +178,11 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
   enum TG_FILETYPE file_type;
 
   memset(&media_file_tags, 0, sizeof(media_file_tags));
+#ifdef HAVE_LIBMAGIC
   file_type = detect_filetype(filename, tag_regexes->magic_handle);
+#else
+  file_type = detect_filetype_extension(filename);
+#endif
 
   if (file_type == TG_MP3) {
     struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);

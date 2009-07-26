@@ -1,7 +1,10 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include "config.h"
+#ifdef HAVE_LIBMAGIC
 #include <magic.h>
+#endif
 #include <pcre.h>
 
 struct media_file_tags {
@@ -32,7 +35,9 @@ struct tag_regexes {
   pcre *copyright_regex;
   pcre *url_regex;
   pcre *encoded_by_regex;
+#ifdef HAVE_LIBMAGIC
   magic_t magic_handle;
+#endif
 };
 
 
