@@ -24,7 +24,7 @@ static id3_utf8_t
   for (j = 0; j < nstrings; ++j) {
     ucs4 = id3_field_getstrings(field, j);
     utf8 = id3_ucs4_utf8duplicate(ucs4);
-   if (j == 0) {
+    if (j == 0) {
       return utf8;
     }
     else {
@@ -33,6 +33,34 @@ static id3_utf8_t
   }
   return NULL;
 }
+
+/* Comments are extracted separately. */
+static id3_utf8_t
+*mp3comment_from_frame(struct id3_frame *frame, struct id3_tag *tag)
+{
+  union id3_field const *field;
+  id3_ucs4_t const *ucs4;
+  id3_utf8_t *utf8;
+  unsigned int nstrings, j;
+  int i = 0;
+
+  while ((frame = id3_tag_findframe(tag, ID3_FRAME_COMMENT, i++))) {
+    ucs4 = id3_field_getstring(id3_frame_field(frame, 2));
+
+    if (*ucs4)
+      continue;
+    
+    ucs4 = id3_field_getfullstring(id3_frame_field(frame, 3));
+    
+    utf8 = id3_ucs4_utf8duplicate(ucs4);
+    if (!utf8)
+      return NULL;
+    
+    return utf8;
+  }
+  return NULL;
+}
+
 
 
 /* Initalize the MP3 file. Stores tag values in the media_file_tags
@@ -66,7 +94,7 @@ initialize_mp3(const struct id3_file *id3_file, struct media_file_tags *media_fi
   media_file_tags->genre = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_COMMENT, 0);   
-  media_file_tags->comment = frame ? (char *)mp3tag_from_frame(frame) : NULL;
+  media_file_tags->comment = frame ? (char *)mp3comment_from_frame(frame, id3_tag) : NULL;
 
   frame = id3_tag_findframe(id3_tag, ID3_FRAME_ENCODED_BY, 0);   
   media_file_tags->encoded_by = frame ? (char *)mp3tag_from_frame(frame) : NULL;
