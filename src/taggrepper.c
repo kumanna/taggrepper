@@ -56,6 +56,7 @@ help_message(const char *command)
 #ifdef HAVE_LIBMAGIC
 "  -u, --use-magic\t\tUse libmagic to find file type, irrespective of extension\n"
 #endif
+"  -0, --print0, use null character as delimiter. This option can be used with -0 option of xargs.\n"
 "  -r, --recursive\t\tSearch directories recursively\n"
 "  -v, --version\t\t\tDisplay version and exit\n"
 "  -h, --help\t\t\tDisplay this help message\n"
@@ -73,6 +74,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
   int c;
 
   *recursive = 0;
+  DELIMITER = '\n';
   memset(tag_regexes, 0, sizeof(struct tag_regexes));
 
   while (1) {
@@ -96,6 +98,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
 #ifdef HAVE_LIBMAGIC
       {"use-magic", 0, 0, 'm'},
 #endif
+      {"print0", 0, 0, '0'},
       {"recursive", 0, 0, 'r'},
       {"version", 0, 0, 'v'},
       {"help", 0, 0, 'h'},
@@ -103,10 +106,10 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
     };
 
 #ifdef HAVE_LIBMAGIC
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:mrvh",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:mrvh0",
 		    long_options, &option_index);
 #else
-    c = getopt_long(argc, argv, "t:a:l:y:g:c:rvh",
+    c = getopt_long(argc, argv, "t:a:l:y:g:c:rvh0",
 		    long_options, &option_index);
 #endif
     if (c == -1) {
@@ -119,6 +122,10 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
       continue;
     }
 #endif
+    else if (c == '0'){
+      DELIMITER = '\0';
+      continue;
+    }
     else if (c == 'r') {
       *recursive = 1;
       continue;
@@ -218,10 +225,10 @@ main(int argc, char *argv[])
   if (optind < argc) {
     while (optind < argc) {
       if (!recursive) {
-	processFile(argv[optind++], &tag_regexes_struct);
+        processFile(argv[optind++], &tag_regexes_struct);
       }
       else {
-	processFile_recursive(argv[optind++], &tag_regexes_struct);
+        processFile_recursive(argv[optind++], &tag_regexes_struct);
       }
     }
   }

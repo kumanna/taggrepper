@@ -7,6 +7,9 @@
 #endif
 #include <pcre.h>
 
+/* delimiter char used to end file names */
+char DELIMITER;
+
 struct media_file_tags {
   char *title;
   char *artist;

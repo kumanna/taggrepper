@@ -221,7 +221,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	printf("%s\n", filename);
+	      printf("%s%c", filename, DELIMITER);
       }
       free_media_tags(&media_file_tags);
       id3_file_close(id3_file);
@@ -236,7 +236,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	printf("%s\n", filename);
+	      printf("%s%c", filename, DELIMITER);
       }
       /* We don't free the media tags, since they just point to the
          strings in the OggVorbis_File structure. */
@@ -251,7 +251,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
 }
 
 /* We copy the regular expressions, since FTW's callback function
-   cannot receive any custon data. */
+   cannot receive any custom data. */
 static struct tag_regexes *
 tag_regexes_copy;
 
