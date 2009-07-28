@@ -2,7 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <id3tag.h>
+#ifdef HAVE_LIBVORBISFILE
 #include <vorbis/vorbisfile.h>
+#endif
 #include <ftw.h>
 
 #include "files.h"
