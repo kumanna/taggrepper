@@ -56,7 +56,7 @@ help_message(const char *command)
 #ifdef HAVE_LIBMAGIC
 "  -u, --use-magic\t\tUse libmagic to find file type, irrespective of extension\n"
 #endif
-"  -0, --print0, use null character as delimiter. This option can be used with -0 option of xargs.\n"
+"  -0, --print0,\t\t\tUse null character as delimiter. This option can be used with -0 option of xargs.\n"
 "  -r, --recursive\t\tSearch directories recursively\n"
 "  -v, --version\t\t\tDisplay version and exit\n"
 "  -h, --help\t\t\tDisplay this help message\n"
@@ -69,13 +69,14 @@ help_message(const char *command)
 
 /* Parse the command line options and process each file */
 static int
-parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int *recursive)
+parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, struct aux_params *aux_params, int *recursive)
 {
   int c;
 
   *recursive = 0;
-  DELIMITER = '\n';
   memset(tag_regexes, 0, sizeof(struct tag_regexes));
+  memset(aux_params, 0, sizeof(struct aux_params));
+  aux_params->delimiter = '\n';
 
   while (1) {
     int option_index = 0;
@@ -123,7 +124,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, int 
     }
 #endif
     else if (c == '0'){
-      DELIMITER = '\0';
+      aux_params->delimiter = '\0';
       continue;
     }
     else if (c == 'r') {
@@ -211,11 +212,12 @@ main(int argc, char *argv[])
 {
   int ret;
   /* Structure possessing the regular expressions */
-  struct tag_regexes tag_regexes_struct;  
+  struct tag_regexes tag_regexes_struct;
+  struct aux_params aux_params_struct;
   int recursive;
 
   mtrace();
-  ret = parse_command_line(argc, argv, &tag_regexes_struct, &recursive);
+  ret = parse_command_line(argc, argv, &tag_regexes_struct, &aux_params_struct, &recursive);
 
   if (!ret) {
     fprintf(stderr, "Exiting with error!\n");
@@ -225,10 +227,10 @@ main(int argc, char *argv[])
   if (optind < argc) {
     while (optind < argc) {
       if (!recursive) {
-        processFile(argv[optind++], &tag_regexes_struct);
+        processFile(argv[optind++], &tag_regexes_struct, &aux_params_struct);
       }
       else {
-        processFile_recursive(argv[optind++], &tag_regexes_struct);
+        processFile_recursive(argv[optind++], &tag_regexes_struct, &aux_params_struct);
       }
     }
   }

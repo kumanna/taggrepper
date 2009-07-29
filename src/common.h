@@ -7,9 +7,6 @@
 #endif
 #include <pcre.h>
 
-/* delimiter char used to end file names */
-char DELIMITER;
-
 struct media_file_tags {
   char *title;
   char *artist;
@@ -41,6 +38,11 @@ struct tag_regexes {
 #ifdef HAVE_LIBMAGIC
   magic_t magic_handle;
 #endif
+};
+
+struct aux_params {
+  /* delimiter char used to end file names */
+  char delimiter;
 };
 
 #define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n")

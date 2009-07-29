@@ -207,7 +207,7 @@ detect_filetype(const char *filename, magic_t magic_handle)
 
 /* Process one media file. */
 int
-processFile(const char *filename, struct tag_regexes *tag_regexes)
+processFile(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
   struct media_file_tags media_file_tags;
   enum TG_FILETYPE file_type;
@@ -224,7 +224,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	      printf("%s%c", filename, DELIMITER);
+	      printf("%s%c", filename, aux_params->delimiter);
       }
       free_media_tags(&media_file_tags);
       id3_file_close(id3_file);
@@ -239,7 +239,7 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	      printf("%s%c", filename, DELIMITER);
+	      printf("%s%c", filename, aux_params->delimiter);
       }
       /* We don't free the media tags, since they just point to the
          strings in the OggVorbis_File structure. */
@@ -253,24 +253,25 @@ processFile(const char *filename, struct tag_regexes *tag_regexes)
   return 1;
 }
 
-/* We copy the regular expressions, since FTW's callback function
-   cannot receive any custom data. */
-static struct tag_regexes *
-tag_regexes_copy;
+/* We copy the regular expressions and auxiliary parameters, since
+   FTW's callback function cannot receive any custom data. */
+static struct tag_regexes *tag_regexes_copy;
+static struct aux_params *aux_params_copy;
 
 static int
-process_file_wrapper(const char *filename, const struct stat *sb, int tflag)
+process_file_wrapper(const char *filename, const struct stat *sb, int tflag, struct aux_params *aux_params)
 {
   if (tflag == FTW_F || tflag == FTW_SL) {
-    processFile(filename, tag_regexes_copy);
+    processFile(filename, tag_regexes_copy, aux_params);
   }
   return 0;
 }
 
 int
-processFile_recursive(const char *filename, struct tag_regexes *tag_regexes)
+processFile_recursive(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
   tag_regexes_copy = tag_regexes;
+  aux_params_copy = aux_params;
   if (ftw(filename, process_file_wrapper, 20) == -1) {
     fprintf(stderr, "Error traversing %s\n", filename);
   }
