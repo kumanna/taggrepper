@@ -205,6 +205,47 @@ detect_filetype(const char *filename, magic_t magic_handle)
 }
 #endif
 
+/* Display tags requested by the user */
+static void
+display_tags(struct aux_params *aux_params, struct media_file_tags *media_file_tags)
+{
+  if (aux_params->display_title) {
+    printf("\tTitle: %s\n", media_file_tags->title ? media_file_tags->title : "");
+  }
+  if (aux_params->display_artist) {
+    printf("\tArtist: %s\n", media_file_tags->artist ? media_file_tags->artist : "");
+  }
+  if (aux_params->display_album) {
+    printf("\tAlbum: %s\n", media_file_tags->album ? media_file_tags->album : "");
+  }
+  if (aux_params->display_year) {
+    printf("\tYear: %s\n", media_file_tags->year ? media_file_tags->year : "");
+  }
+  if (aux_params->display_genre) {
+    printf("\tGenre: %s\n", media_file_tags->genre ? media_file_tags->genre : "");
+  }
+  if (aux_params->display_comment) {
+    printf("\tComment: %s\n", media_file_tags->comment ? media_file_tags->comment : "");
+  }
+  if (aux_params->display_track) {
+    printf("\tTrack: %s\n", media_file_tags->track ? media_file_tags->track : "");
+  }
+  if (aux_params->display_composer) {
+    printf("\tComposer: %s\n", media_file_tags->composer ? media_file_tags->composer : "");
+  }
+  if (aux_params->display_orig_artist) {
+    printf("\tOrig_artist: %s\n", media_file_tags->orig_artist ? media_file_tags->orig_artist : "");
+  }
+  if (aux_params->display_copyright) {
+    printf("\tCopyright: %s\n", media_file_tags->copyright ? media_file_tags->copyright : "");
+  }
+  if (aux_params->display_url) {
+    printf("\tURL: %s\n", media_file_tags->url ? media_file_tags->url : "");
+  }
+  if (aux_params->display_encoded_by) {
+    printf("\tEncoded-by: %s\n", media_file_tags->encoded_by ? media_file_tags->encoded_by : "");
+  }
+}
 /* Process one media file. */
 int
 process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
@@ -224,8 +265,9 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	      printf("%s%c", filename, aux_params->delimiter);
+	printf("%s%c", filename, aux_params->delimiter);
       }
+      display_tags(aux_params, &media_file_tags);
       free_media_tags(&media_file_tags);
       id3_file_close(id3_file);
     }
@@ -239,7 +281,8 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
-	      printf("%s%c", filename, aux_params->delimiter);
+	printf("%s%c", filename, aux_params->delimiter);
+	display_tags(aux_params, &media_file_tags);
       }
       /* We don't free the media tags, since they just point to the
          strings in the OggVorbis_File structure. */

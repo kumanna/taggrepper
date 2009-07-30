@@ -53,6 +53,19 @@ help_message(const char *command)
 "  -u, --url=REGEXP\t\tMatch the URL tag against REGEXP\n"
 "  -e, --encode=REGEXP\t\tMatch the encode tag against REGEXP\n"
 "\n"
+"      --display-title\t\tdisplay title tag of matching files\n"
+"      --display-artist\t\tdisplay artist tag of matching files\n"
+"      --display-album\t\tdisplay album tag of matching files\n"
+"      --display-year\t\tdisplay year tag of matching files\n"
+"      --display-genre\t\tdisplay genre tag of matching files\n"
+"      --display-comment\t\tdisplay comment tag of matching files\n"
+"      --display-track\t\tdisplay track tag of matching files\n"
+"      --display-composer\t\tdisplay composer tag of matching files\n"
+"      --display-orig-artist\t\tdisplay orig-artist tag of matching files\n"
+"      --display-copyright\t\tdisplay copyright tag of matching files\n"
+"      --display-url\t\tdisplay url tag of matching files\n"
+"      --display-encoded-by\t\tdisplay encoded-by tag of matching files\n"
+"\n"
 #ifdef HAVE_LIBMAGIC
 "  -u, --use-magic\t\tUse libmagic to find file type, irrespective of extension\n"
 #endif
@@ -103,6 +116,19 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
       {"recursive", 0, 0, 'r'},
       {"version", 0, 0, 'v'},
       {"help", 0, 0, 'h'},
+
+      {"display-title", 0, 0, 0},
+      {"display-artist", 0, 0, 0},
+      {"display-album", 0, 0, 0},
+      {"display-year", 0, 0, 0},
+      {"display-genre", 0, 0, 0},
+      {"display-comment", 0, 0, 0},
+      {"display-track", 0, 0, 0},
+      {"display-composer", 0, 0, 0},
+      {"display-orig-artist", 0, 0, 0},
+      {"display-copyright", 0, 0, 0},
+      {"display-url", 0, 0, 0},
+      {"display-encoded-by", 0, 0, 0},
       {0, 0, 0, 0}
     };
 
@@ -140,7 +166,48 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
       return HELP_DISPLAYED;
     }
 
+    if (c == 0) {
+      if (!strcmp(long_options[option_index].name, "display-title")) {
+	aux_params->display_title = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-artist")) {
+	aux_params->display_artist = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-album")) {
+	aux_params->display_album = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-year")) {
+	aux_params->display_year = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-genre")) {
+	aux_params->display_genre = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-comment")) {
+	aux_params->display_comment = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-track")) {
+	aux_params->display_track = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-composer")) {
+	aux_params->display_composer = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-orig-artist")) {
+	aux_params->display_orig_artist = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-copyright")) {
+	aux_params->display_copyright = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-url")) {
+	aux_params->display_url = 1;
+      }
+      else if (!strcmp(long_options[option_index].name, "display-encoded-by")) {
+	aux_params->display_encoded_by = 1;
+      }
+      continue;
+    }
+
     if (!optarg) {
+      fprintf(stderr, "Unrecognized command line option!\n");
       return 0;
     }
     re = initialize_regexp(optarg);
@@ -220,7 +287,7 @@ main(int argc, char *argv[])
   ret = parse_command_line(argc, argv, &tag_regexes_struct, &aux_params_struct, &recursive);
 
   if (!ret) {
-    fprintf(stderr, "Exiting with error!\n");
+    fprintf(stderr, "Exiting with error code %d!\n", ret);
     return 1;
   }
   /* We interpret non-arguments as file names */

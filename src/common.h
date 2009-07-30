@@ -44,7 +44,19 @@ struct aux_params {
   /* Use the magic library, if available */
   magic_t magic_handle;
 #endif
-};
+  int display_title;
+  int display_artist;
+  int display_album;
+  int display_year;
+  int display_genre;
+  int display_comment;
+  int display_track;
+  int display_composer;
+  int display_orig_artist;
+  int display_copyright;
+  int display_url;
+  int display_encoded_by;
+  };
 
 #define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n")
 #endif
