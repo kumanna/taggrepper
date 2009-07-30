@@ -259,10 +259,10 @@ static struct tag_regexes *tag_regexes_copy;
 static struct aux_params *aux_params_copy;
 
 static int
-process_file_wrapper(const char *filename, const struct stat *sb, int tflag, struct aux_params *aux_params)
+process_file_wrapper(const char *filename, const struct stat *sb, int tflag)
 {
   if (tflag == FTW_F || tflag == FTW_SL) {
-    process_file(filename, tag_regexes_copy, aux_params);
+    process_file(filename, tag_regexes_copy, aux_params_copy);
   }
   return 0;
 }
