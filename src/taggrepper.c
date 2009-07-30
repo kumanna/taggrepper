@@ -14,7 +14,7 @@
 /* This function releases the PCRE regular expressions. The magic
    handle is also closed. */
 static void
-free_tag_regexes(struct tag_regexes *tag_regexes)
+free_tag_regexes(struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
   pcre_free(tag_regexes->title_regex);
   pcre_free(tag_regexes->artist_regex);
@@ -29,7 +29,7 @@ free_tag_regexes(struct tag_regexes *tag_regexes)
   pcre_free(tag_regexes->encoded_by_regex);
 #ifdef HAVE_LIBMAGIC
   if (tag_regexes->magic_handle) {
-    magic_close(tag_regexes->magic_handle);
+    magic_close(aux_params->magic_handle);
   }
 #endif
 }
@@ -118,8 +118,8 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
     }
 #ifdef HAVE_LIBMAGIC
     else if (c == 'm') {
-      tag_regexes->magic_handle = magic_open(MAGIC_NONE);
-      magic_load(tag_regexes->magic_handle, NULL);
+      aux_params->magic_handle = magic_open(MAGIC_NONE);
+      magic_load(aux_params->magic_handle, NULL);
       continue;
     }
 #endif
@@ -241,6 +241,6 @@ main(int argc, char *argv[])
     }
     ret = 0;
   }
-  free_tag_regexes(&tag_regexes_struct);
+  free_tag_regexes(&tag_regexes_struct, &aux_params_struct);
   return ret == 0;
 }

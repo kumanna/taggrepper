@@ -214,7 +214,7 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
 
   memset(&media_file_tags, 0, sizeof(media_file_tags));
 #ifdef HAVE_LIBMAGIC
-  file_type = detect_filetype(filename, tag_regexes->magic_handle);
+  file_type = detect_filetype(filename, aux_params->magic_handle);
 #else
   file_type = detect_filetype_extension(filename);
 #endif
