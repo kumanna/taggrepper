@@ -207,7 +207,7 @@ detect_filetype(const char *filename, magic_t magic_handle)
 
 /* Process one media file. */
 int
-processFile(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
+process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
   struct media_file_tags media_file_tags;
   enum TG_FILETYPE file_type;
@@ -262,13 +262,13 @@ static int
 process_file_wrapper(const char *filename, const struct stat *sb, int tflag, struct aux_params *aux_params)
 {
   if (tflag == FTW_F || tflag == FTW_SL) {
-    processFile(filename, tag_regexes_copy, aux_params);
+    process_file(filename, tag_regexes_copy, aux_params);
   }
   return 0;
 }
 
 int
-processFile_recursive(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
+process_file_recursive(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
   tag_regexes_copy = tag_regexes;
   aux_params_copy = aux_params;

@@ -227,10 +227,10 @@ main(int argc, char *argv[])
   if (optind < argc) {
     while (optind < argc) {
       if (!recursive) {
-        processFile(argv[optind++], &tag_regexes_struct, &aux_params_struct);
+        process_file(argv[optind++], &tag_regexes_struct, &aux_params_struct);
       }
       else {
-        processFile_recursive(argv[optind++], &tag_regexes_struct, &aux_params_struct);
+        process_file_recursive(argv[optind++], &tag_regexes_struct, &aux_params_struct);
       }
     }
   }

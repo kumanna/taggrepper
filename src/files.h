@@ -6,8 +6,8 @@
 #define ID3_FRAME_ENCODED_BY "TENC"
 
 int
-processFile(const char *, struct tag_regexes *, struct aux_params *);
+process_file(const char *, struct tag_regexes *, struct aux_params *);
 
 int
-processFile_recursive(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *);
+process_file_recursive(const char *filename, struct tag_regexes *tag_regexes, struct aux_params *);
 #endif
