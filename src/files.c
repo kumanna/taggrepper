@@ -272,7 +272,7 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
       id3_file_close(id3_file);
     }
     else {
-      fprintf(stderr, "Error reading file %s\n", filename);
+      fprintf(stderr, "Error reading file %s!\n", filename);
     }
   }
 #ifdef HAVE_LIBVORBISFILE
@@ -289,10 +289,13 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
       ov_clear(&oggv_file);
     }
     else {
-      fprintf(stderr, "Error reading file %s\n", filename);
+      fprintf(stderr, "Error reading file %s!\n", filename);
     }
   }
 #endif
+  else {
+    fprintf(stderr, "Could not read file %s!\n", filename);
+  }
   return 1;
 }
 
@@ -316,7 +319,7 @@ process_file_recursive(const char *filename, struct tag_regexes *tag_regexes, st
   tag_regexes_copy = tag_regexes;
   aux_params_copy = aux_params;
   if (ftw(filename, process_file_wrapper, 20) == -1) {
-    fprintf(stderr, "Error traversing %s\n", filename);
+    fprintf(stderr, "Error traversing %s!\n", filename);
   }
   return 1;
 }
