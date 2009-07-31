@@ -35,6 +35,7 @@ struct tag_regexes {
   pcre *copyright_regex;
   pcre *url_regex;
   pcre *encoded_by_regex;
+  pcre *any_tag_regex;
 };
 
 struct aux_params {
@@ -56,7 +57,8 @@ struct aux_params {
   int display_copyright;
   int display_url;
   int display_encoded_by;
-  };
+  int any_tag; /* do we check all tags? */
+};
 
 #define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense: BSD License \n")
 #endif

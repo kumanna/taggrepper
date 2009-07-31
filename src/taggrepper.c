@@ -33,6 +33,7 @@ free_tag_regexes(struct tag_regexes *tag_regexes, struct aux_params *aux_params)
   pcre_free(tag_regexes->copyright_regex);
   pcre_free(tag_regexes->url_regex);
   pcre_free(tag_regexes->encoded_by_regex);
+  pcre_free(tag_regexes->any_tag_regex);
 #ifdef HAVE_LIBMAGIC
   if (tag_regexes->magic_handle) {
     magic_close(aux_params->magic_handle);
@@ -57,7 +58,9 @@ help_message(const char *command)
 "  -o, --orig-artist=REGEXP\tMatch the original artist tag against REGEXP\n"
 "  -c, --copyright=REGEXP\tMatch the copyright tag against REGEXP\n"
 "  -u, --url=REGEXP\t\tMatch the URL tag against REGEXP\n"
-"  -e, --encode=REGEXP\t\tMatch the encode tag against REGEXP\n"
+"  -e, --encoded-by=REGEXP\t\tMatch the encoded-by tag against REGEXP\n"
+"      --any-tag=REGEXP\t\tMatch the encoded-by tag against REGEXP.\n"
+"                         Using this option makes every one of the above options to be ignored\n"
 "\n"
 "      --display-title\t\tdisplay title tag of matching files\n"
 "      --display-artist\t\tdisplay artist tag of matching files\n"
@@ -115,6 +118,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
       {"copyright", 1, 0, 0},
       {"url", 1, 0, 0},
       {"encoded-by", 1, 0, 0},
+      {"any-tag", 1, 0, 0},
 #ifdef HAVE_LIBMAGIC
       {"use-magic", 0, 0, 'm'},
 #endif
@@ -175,41 +179,52 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
     if (c == 0) {
       if (!strcmp(long_options[option_index].name, "display-title")) {
 	aux_params->display_title = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-artist")) {
 	aux_params->display_artist = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-album")) {
 	aux_params->display_album = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-year")) {
 	aux_params->display_year = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-genre")) {
 	aux_params->display_genre = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-comment")) {
 	aux_params->display_comment = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-track")) {
 	aux_params->display_track = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-composer")) {
 	aux_params->display_composer = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-orig-artist")) {
 	aux_params->display_orig_artist = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-copyright")) {
 	aux_params->display_copyright = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-url")) {
 	aux_params->display_url = 1;
+	continue;
       }
       else if (!strcmp(long_options[option_index].name, "display-encoded-by")) {
 	aux_params->display_encoded_by = 1;
+	continue;
       }
-      continue;
     }
 
     if (!optarg) {
@@ -224,7 +239,11 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
     switch (c) {
     case 0:
       /* Check if a known long option was specified */
-      if (!strcmp(long_options[option_index].name, "composer")) {
+      if (!strcmp(long_options[option_index].name, "any-tag")) {
+	aux_params->any_tag = 1;
+	tag_regexes->any_tag_regex = re;
+      }
+      else if (!strcmp(long_options[option_index].name, "composer")) {
 	tag_regexes->composer_regex = re;
       }
       else if (!strcmp(long_options[option_index].name, "orig-artist")) {

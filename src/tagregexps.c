@@ -42,6 +42,22 @@ match_string(pcre *re, const char *subject)
 }
 
 int
+match_tag_regexps_any(struct media_file_tags *media_file_tags, pcre *any_tag_regex){
+  return match_string(any_tag_regex, media_file_tags->title) || \
+    match_string(any_tag_regex, media_file_tags->artist) || \
+    match_string(any_tag_regex, media_file_tags->album) ||	\
+    match_string(any_tag_regex, media_file_tags->year) ||	\
+    match_string(any_tag_regex, media_file_tags->genre) ||	\
+    match_string(any_tag_regex, media_file_tags->comment) || \
+    match_string(any_tag_regex, media_file_tags->track) ||	\
+    match_string(any_tag_regex, media_file_tags->composer) || \
+    match_string(any_tag_regex, media_file_tags->orig_artist) ||	\
+    match_string(any_tag_regex, media_file_tags->copyright) || \
+    match_string(any_tag_regex, media_file_tags->url) ||	\
+    match_string(any_tag_regex, media_file_tags->encoded_by);
+}
+
+int
 match_tag_regexps(struct media_file_tags *media_file_tags, struct tag_regexes *tag_regexes) {
   return match_string(tag_regexes->title_regex, media_file_tags->title) && \
     match_string(tag_regexes->artist_regex, media_file_tags->artist) && \

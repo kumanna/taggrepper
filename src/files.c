@@ -264,7 +264,9 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     struct id3_file *id3_file = id3_file_open(filename, ID3_FILE_MODE_READONLY);
     if (id3_file) {
       initialize_mp3(id3_file, &media_file_tags);
-      if (match_tag_regexps(&media_file_tags, tag_regexes)) {
+      if ((aux_params->any_tag ?
+	   match_tag_regexps_any(&media_file_tags, tag_regexes->any_tag_regex) :
+	   match_tag_regexps(&media_file_tags, tag_regexes))) {
 	printf("%s%c", filename, aux_params->delimiter);
 	display_tags(aux_params, &media_file_tags);
       }
@@ -280,7 +282,9 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     OggVorbis_File oggv_file;
     if (ov_fopen(filename, &oggv_file) >= 0) {
       initialize_oggvorbis(&oggv_file, &media_file_tags);
-      if (match_tag_regexps(&media_file_tags, tag_regexes)) {
+      if ((aux_params->any_tag ?
+	   match_tag_regexps_any(&media_file_tags, tag_regexes->any_tag_regex) :
+	   match_tag_regexps(&media_file_tags, tag_regexes))) {
 	printf("%s%c", filename, aux_params->delimiter);
 	display_tags(aux_params, &media_file_tags);
       }
@@ -293,9 +297,10 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     }
   }
 #endif
-  else {
-    fprintf(stderr, "Could not read file %s!\n", filename);
-  }
+  /* Don't print these errors for now */
+  /* else { */
+  /*   fprintf(stderr, "Could not read file %s!\n", filename); */
+  /* } */
   return 1;
 }
 
@@ -319,7 +324,7 @@ process_file_recursive(const char *filename, struct tag_regexes *tag_regexes, st
   tag_regexes_copy = tag_regexes;
   aux_params_copy = aux_params;
   if (ftw(filename, process_file_wrapper, 20) == -1) {
-    fprintf(stderr, "Error traversing %s!\n", filename);
+    fprintf(stderr, "Error reading %s! (Did you make a mistake with the command line options?)\n", filename);
   }
   return 1;
 }
