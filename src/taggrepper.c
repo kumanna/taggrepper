@@ -11,6 +11,10 @@
 /* Detect if some help was displayed, to avoid error messages */
 #define HELP_DISPLAYED 2
 
+/* Some custom error codes */
+#define ERR_UNRECOGNIZED_COMMAND 3
+#define ERR_INCORRECT_REGEXP 4
+
 /* This function releases the PCRE regular expressions. The magic
    handle is also closed. */
 static void
@@ -208,11 +212,12 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
 
     if (!optarg) {
       fprintf(stderr, "Unrecognized command line option!\n");
-      return 0;
+      return ERR_UNRECOGNIZED_COMMAND;
     }
     re = initialize_regexp(optarg);
     if (!re) {
-      return 0;
+      fprintf(stderr, "Couldn't form regular expression!\n");
+      return ERR_INCORRECT_REGEXP;
     }
     switch (c) {
     case 0:
@@ -263,7 +268,8 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
       break;
 
     case '?':
-      return 0;
+      fprintf(stderr, "Couldn't recognize command line parameters!\n");
+      return ERR_UNRECOGNIZED_COMMAND;
       break;
 
     default:
