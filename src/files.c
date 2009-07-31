@@ -266,8 +266,8 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
       initialize_mp3(id3_file, &media_file_tags);
       if (match_tag_regexps(&media_file_tags, tag_regexes)) {
 	printf("%s%c", filename, aux_params->delimiter);
+	display_tags(aux_params, &media_file_tags);
       }
-      display_tags(aux_params, &media_file_tags);
       free_media_tags(&media_file_tags);
       id3_file_close(id3_file);
     }
