@@ -1,0 +1,109 @@
+.TH TAGGREPPER "1" "July 2009" "taggrepper 0.01" "User Commands"
+.SH NAME
+taggrepper \- search and match tags of media file for regular expressions
+.SH SYNOPSIS
+.B taggrepper
+[\fI--tag-label regexp\fR]... [\fI--display-taglabel\fR]... [\fIFILE/DIRECTORY\fR]...
+.SH DESCRIPTION
+Perform a regular expression search on the tags of specified media files.
+.PP
+Mandatory arguments to long options are mandatory for short options
+too. All regular expressions are Perl Compatible Regular expressions
+supported by the PCRE libraries.
+.TP
+\fB\-t\fR, \fB\-\-title\fR=\fIREGEXP\fR
+Match the title tag against REGEXP
+.TP
+\fB\-a\fR, \fB\-\-artist\fR=\fIREGEXP\fR
+Match the artist tag against REGEXP
+.TP
+\fB\-l\fR, \fB\-\-album\fR,=REGEXP
+Match the album, tag against REGEXP
+.TP
+\fB\-y\fR, \fB\-\-year\fR, =REGEXP
+Match the year tag against REGEXP
+.TP
+\fB\-g\fR, \fB\-\-genre\fR,=REGEXP
+Match the genre tag against REGEXP
+.TP
+\fB\-c\fR, \fB\-\-comment\fR=\fIREGEXP\fR
+Match the comment tag against REGEXP
+.TP
+\fB\-\-track\fR=\fIREGEXP\fR
+Match the track tag against REGEXP
+.TP
+\fB\-c\fR, \fB\-\-composer\fR=\fIREGEXP\fR
+Match the composer tag against REGEXP
+.TP
+\fB\-o\fR, \fB\-\-orig\-artist\fR=\fIREGEXP\fR
+Match the original artist tag against REGEXP
+.TP
+\fB\-c\fR, \fB\-\-copyright\fR=\fIREGEXP\fR
+Match the copyright tag against REGEXP
+.TP
+\fB\-u\fR, \fB\-\-url\fR=\fIREGEXP\fR
+Match the URL tag against REGEXP
+.TP
+\fB\-e\fR, \fB\-\-encoded\-by\fR=\fIREGEXP\fR
+Match the encoded\-by tag against REGEXP
+.TP
+\fB\-\-any\-tag\fR=\fIREGEXP\fR
+Match the encoded\-by tag against REGEXP.
+Using this option makes every one of the above options to be ignored
+.TP
+\fB\-\-display\-title\fR
+display title tag of matching files
+.TP
+\fB\-\-display\-artist\fR
+display artist tag of matching files
+.TP
+\fB\-\-display\-album\fR
+display album tag of matching files
+.TP
+\fB\-\-display\-year\fR
+display year tag of matching files
+.TP
+\fB\-\-display\-genre\fR
+display genre tag of matching files
+.TP
+\fB\-\-display\-comment\fR
+display comment tag of matching files
+.TP
+\fB\-\-display\-track\fR
+display track tag of matching files
+.TP
+\fB\-\-display\-composer\fR
+display composer tag of matching files
+.TP
+\fB\-\-display\-orig\-artist\fR
+display orig\-artist tag of matching files
+.TP
+\fB\-\-display\-copyright\fR
+display copyright tag of matching files
+.TP
+\fB\-\-display\-url\fR
+display url tag of matching files
+.TP
+\fB\-\-display\-encoded\-by\fR
+display encoded\-by tag of matching files
+.TP
+\fB\-0\fR, \fB\-\-print0\fR,
+Use null character as delimiter. This option can be used with \fB\-0\fR option of xargs.
+.TP
+\fB\-r\fR, \fB\-\-recursive\fR
+Search directories recursively
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Display version and exit
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display this help message
+.PP
+All regular expressions are PCRE regular expressions. Refer to the
+PCRE documentation for details.
+Report comments and bugs to a.kumar@alumni.iitm.ac.in
+.SH COPYRIGHT
+Copyright \(co Kumar Appaiah
+License: BSD License (see COPYING file in the distribution tarball for details)
+.SH "SEE ALSO"
+\fBpcre\fP(3)

@@ -60,5 +60,5 @@ struct aux_params {
   int any_tag; /* do we check all tags? */
 };
 
-#define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense: BSD License \n")
+#define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense: BSD License (see COPYING file in the distribution tarball for details)\n")
 #endif

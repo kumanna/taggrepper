@@ -4,7 +4,7 @@ AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
 AC_CHECK_HEADERS([stdlib.h string.h])
 AC_CHECK_FUNCS([memset strcasecmp strstr])
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
 
 
 
