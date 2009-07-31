@@ -58,5 +58,5 @@ struct aux_params {
   int display_encoded_by;
   };
 
-#define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n")
+#define VERSION_STRING ("%s %s\nCopyright (C) Kumar Appaiah\nLicense: BSD License \n")
 #endif
