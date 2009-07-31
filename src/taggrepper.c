@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(DEBUG)
 #include <mcheck.h>
+#endif
 
 #include "common.h"
 #include "tagregexps.h"
@@ -289,7 +291,9 @@ main(int argc, char *argv[])
   struct aux_params aux_params_struct;
   int recursive;
 
+#if defined(DEBUG)
   mtrace();
+#endif
   ret = parse_command_line(argc, argv, &tag_regexes_struct, &aux_params_struct, &recursive);
 
   if (!ret) {
@@ -309,7 +313,9 @@ main(int argc, char *argv[])
   }
   else {
     if (ret != HELP_DISPLAYED) {
-      printf("No files specified\n");
+      if (ret != ERR_UNRECOGNIZED_COMMAND && ret != ERR_INCORRECT_REGEXP) {
+	printf("No files specified\n");
+      }
       printf("Please use the --help option for usage information.\n");
     }
     ret = 0;
