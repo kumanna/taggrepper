@@ -35,7 +35,7 @@ free_tag_regexes(struct tag_regexes *tag_regexes, struct aux_params *aux_params)
   pcre_free(tag_regexes->encoded_by_regex);
   pcre_free(tag_regexes->any_tag_regex);
 #ifdef HAVE_LIBMAGIC
-  if (tag_regexes->magic_handle) {
+  if (aux_params->magic_handle) {
     magic_close(aux_params->magic_handle);
   }
 #endif
@@ -58,7 +58,7 @@ help_message(const char *command)
 "  -o, --orig-artist=REGEXP\tMatch the original artist tag against REGEXP\n"
 "  -c, --copyright=REGEXP\tMatch the copyright tag against REGEXP\n"
 "  -u, --url=REGEXP\t\tMatch the URL tag against REGEXP\n"
-"  -e, --encoded-by=REGEXP\t\tMatch the encoded-by tag against REGEXP\n"
+"  -e, --encoded-by=REGEXP\tMatch the encoded-by tag against REGEXP\n"
 "      --any-tag=REGEXP\t\tMatch the encoded-by tag against REGEXP.\n"
 "                         Using this option makes every one of the above options to be ignored\n"
 "\n"

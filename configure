@@ -724,6 +724,7 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 with_libvorbisfile
+with_libmagic
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1367,6 +1368,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-libvorbisfile    use libvorbisfile library
+  --with-libmagic         use libmagic library
 
 Some influential environment variables:
   CC          C compiler command
@@ -4304,7 +4306,6 @@ ac_config_files="$ac_config_files Makefile src/Makefile doc/Makefile"
 
 
 
-
 for ac_header in id3tag.h
 do
 as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -4992,6 +4993,231 @@ _ACEOF
 
 LIBS="$LIBS -lvorbisfile -lvorbis -lm -logg"
 have_libvorbisfile=yes
+fi
+
+
+fi
+
+
+fi
+
+have_libmagic=no
+
+# Check whether --with-libmagic was given.
+if test "${with_libmagic+set}" = set; then
+  withval=$with_libmagic; use_libmagic=$withval
+else
+  use_libmagic=yes
+fi
+
+
+if test "$use_libmagic" = "yes"; then
+if test "${ac_cv_header_magic_h+set}" = set; then
+  { $as_echo "$as_me:$LINENO: checking for magic.h" >&5
+$as_echo_n "checking for magic.h... " >&6; }
+if test "${ac_cv_header_magic_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_magic_h" >&5
+$as_echo "$ac_cv_header_magic_h" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking magic.h usability" >&5
+$as_echo_n "checking magic.h usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <magic.h>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking magic.h presence" >&5
+$as_echo_n "checking magic.h presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <magic.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: magic.h: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: magic.h: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: magic.h: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: magic.h:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: magic.h: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: magic.h:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: magic.h: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: magic.h: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: magic.h: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------------------- ##
+## Report this to a.kumar@alumni.iitm.ac.in ##
+## ---------------------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for magic.h" >&5
+$as_echo_n "checking for magic.h... " >&6; }
+if test "${ac_cv_header_magic_h+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_header_magic_h=$ac_header_preproc
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_header_magic_h" >&5
+$as_echo "$ac_cv_header_magic_h" >&6; }
+
+fi
+if test "x$ac_cv_header_magic_h" = x""yes; then
+  { $as_echo "$as_me:$LINENO: checking for ov_fopen in -lmagic" >&5
+$as_echo_n "checking for ov_fopen in -lmagic... " >&6; }
+if test "${ac_cv_lib_magic_ov_fopen+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmagic  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ov_fopen ();
+int
+main ()
+{
+return ov_fopen ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_magic_ov_fopen=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_magic_ov_fopen=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_magic_ov_fopen" >&5
+$as_echo "$ac_cv_lib_magic_ov_fopen" >&6; }
+if test "x$ac_cv_lib_magic_ov_fopen" = x""yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBMAGIC 1
+_ACEOF
+
+LIBS="$LIBS -lmagic"
+have_libmagic=yes
 fi
 
 
