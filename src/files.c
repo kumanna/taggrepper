@@ -1,3 +1,36 @@
+/*
+ * Copyright (c) 2009, Kumar Appaiah
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of the author nor the names of the contributors may
+ *   be used to endorse or promote products derived from this software
+ *   without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -52,13 +85,13 @@ static id3_utf8_t
 
     if (*ucs4)
       continue;
-    
+
     ucs4 = id3_field_getfullstring(id3_frame_field(frame, 3));
-    
+
     utf8 = id3_ucs4_utf8duplicate(ucs4);
     if (!utf8)
       return NULL;
-    
+
     return utf8;
   }
   return NULL;
@@ -78,28 +111,28 @@ initialize_mp3(const struct id3_file *id3_file, struct media_file_tags *media_fi
 
   /* Store the tag, if it exists. Else store NULL, so that we can
      happily free these later. */
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_TITLE, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_TITLE, 0);
   media_file_tags->title = (frame) ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ARTIST, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ARTIST, 0);
   media_file_tags->artist = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ALBUM, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ALBUM, 0);
   media_file_tags->album = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_TRACK, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_TRACK, 0);
   media_file_tags->track = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_YEAR, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_YEAR, 0);
   media_file_tags->year = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_GENRE, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_GENRE, 0);
   media_file_tags->genre = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_COMMENT, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_COMMENT, 0);
   media_file_tags->comment = frame ? (char *)mp3comment_from_frame(frame, id3_tag) : NULL;
 
-  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ENCODED_BY, 0);   
+  frame = id3_tag_findframe(id3_tag, ID3_FRAME_ENCODED_BY, 0);
   media_file_tags->encoded_by = frame ? (char *)mp3tag_from_frame(frame) : NULL;
 
   return 1;
@@ -119,7 +152,7 @@ free_media_tags(struct media_file_tags *media_file_tags)
   free(media_file_tags->encoded_by);
   return 1;
 }
- 
+
 
 #ifdef HAVE_LIBVORBISFILE
 /* Initialize Ogg Vorbis file */
@@ -127,7 +160,7 @@ static int
 initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *media_file_tags)
 {
   int i;
-  
+
   for (i = 0; i < oggv_file->vc->comments; ++i) {
     if (!strncmp(oggv_file->vc->user_comments[i], "TITLE=", 6)) {
       media_file_tags->title = oggv_file->vc->user_comments[i] + 6;
@@ -184,7 +217,7 @@ detect_filetype(const char *filename, magic_t magic_handle)
      based detection. */
   const char *err;
   if (magic_handle) {
-    const char *desc = magic_file(magic_handle, filename);    
+    const char *desc = magic_file(magic_handle, filename);
     if ((err = magic_error(magic_handle))) {
       fprintf(stderr, "%s\n", err);
       return TG_UNKNOWN;
