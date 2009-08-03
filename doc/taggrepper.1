@@ -9,7 +9,10 @@ Perform a regular expression search on the tags of specified media files.
 .PP
 Mandatory arguments to long options are mandatory for short options
 too. All regular expressions are Perl Compatible Regular expressions
-supported by the PCRE libraries.
+supported by the PCRE libraries. Note that all matches are ANDed,
+meaning that for a successful match, matches against all tags must
+occur.
+
 .TP
 \fB\-t\fR, \fB\-\-title\fR=\fIREGEXP\fR
 Match the title tag against REGEXP
@@ -17,13 +20,13 @@ Match the title tag against REGEXP
 \fB\-a\fR, \fB\-\-artist\fR=\fIREGEXP\fR
 Match the artist tag against REGEXP
 .TP
-\fB\-l\fR, \fB\-\-album\fR,=REGEXP
+\fB\-l\fR, \fB\-\-album\fR=\fIREGEXP\fR
 Match the album, tag against REGEXP
 .TP
-\fB\-y\fR, \fB\-\-year\fR, =REGEXP
+\fB\-y\fR, \fB\-\-year\fR=\fIREGEXP\fR
 Match the year tag against REGEXP
 .TP
-\fB\-g\fR, \fB\-\-genre\fR,=REGEXP
+\fB\-g\fR, \fB\-\-genre\fR=\fIREGEXP\fR
 Match the genre tag against REGEXP
 .TP
 \fB\-c\fR, \fB\-\-comment\fR=\fIREGEXP\fR
@@ -102,8 +105,14 @@ Display this help message
 All regular expressions are PCRE regular expressions. Refer to the
 PCRE documentation for details.
 Report comments and bugs to a.kumar@alumni.iitm.ac.in
-.SH COPYRIGHT
+.SH COPYING
 Copyright \(co Kumar Appaiah
+.PP
 License: BSD License (see COPYING file in the distribution tarball for details)
+.PP
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+.PP
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the General Public License for more details.
+
 .SH "SEE ALSO"
 \fBpcre\fP(3)
