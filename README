@@ -80,6 +80,23 @@ Finally, Unni Menon's songs in Rhythm.
 $ taggrepper -r --artist "Unni.*Menon" --album "Rhythm" ~/AV/Music_collection/
 /home/kumar/AV/Music_collection/Indian/Tamil/Rhythm/01-Dheenthanana.mp3
 
+Tricks
+======
+
+taggrepper is most useful for making a quick
+playlist. For example, you can easily create an M3U file from
+taggrepper output (see http://en.wikipedia.org/wiki/M3U for details).
+
+taggrepper can also be used as a find replacement tool, along with xargs. For example, you could use eyeD3 to modify tags as:
+
+> taggrepper [options] -print0 [files] | xargs -0 eyeD3 <options>
+
+Or you could call mplayer recursively on a listing, like
+
+> taggrepper [options] -print0 [files] | xargs -0 mplayer
+
+Conclusion
+==========
 Hope you can give me some feedback. I have to write some more
 documentation and tune some finer points, but it should be useful
 already, I hope.
