@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <id3tag.h>
 #include <ftw.h>
+#include <metadata.h>
 
 #include "files.h"
 #include "tagregexps.h"
@@ -44,7 +45,7 @@
 #include <vorbis/vorbisfile.h>
 #endif
 
-enum TG_FILETYPE {TG_UNKNOWN = 0, TG_MP3, TG_OGGVORBIS};
+enum TG_FILETYPE {TG_UNKNOWN = 0, TG_MP3, TG_OGGVORBIS, TG_FLAC};
 
 /* Extract tag from MP3 frame. This code closely follows
    the libid3tag example. */
@@ -191,6 +192,45 @@ initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *me
 }
 #endif /* HAVE_LIBVORBISFILE */
 
+#ifdef HAVE_LIBFLAC
+/* Initialize Ogg Vorbis file */
+static int
+initialize_flac(const FLAC__StreamMetadata *flac_tags, struct media_file_tags *media_file_tags)
+{
+  int i;
+
+  for (i = 0; i < flac_tags->data.vorbis_comment.num_comments; ++i) {
+    if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "TITLE=", 6)) {
+      media_file_tags->title = flac_tags->data.vorbis_comment.comments[i].entry + 6;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ARTIST=", 7)) {
+      media_file_tags->artist = flac_tags->data.vorbis_comment.comments[i].entry + 7;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ALBUM=", 6)) {
+      media_file_tags->album = flac_tags->data.vorbis_comment.comments[i].entry + 6;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "TRACK=", 6)) {
+      media_file_tags->track = flac_tags->data.vorbis_comment.comments[i].entry + 6;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "YEAR=", 5)) {
+      media_file_tags->year = flac_tags->data.vorbis_comment.comments[i].entry + 5;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "GENRE=", 6)) {
+      media_file_tags->genre = flac_tags->data.vorbis_comment.comments[i].entry + 6;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "COMMENT=", 8)) {
+      media_file_tags->comment = flac_tags->data.vorbis_comment.comments[i].entry + 8;
+    }
+    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ENCODED-BY=", 11)) {
+      media_file_tags->encoded_by = flac_tags->data.vorbis_comment.comments[i].entry + 11;
+    }
+  }
+  return 1;
+}
+#endif /* HAVE_LIBFLAC */
+
+
+
 static enum TG_FILETYPE
 detect_filetype_extension(const char *filename)
 {
@@ -204,6 +244,9 @@ detect_filetype_extension(const char *filename)
   }
   else if (!strcasecmp(extension, ".ogg")) {
     return TG_OGGVORBIS;
+  }
+  else if (len > 4 && !strcasecmp(extension - 1, ".flac")) {
+    return TG_FLAC;
   }
   return TG_UNKNOWN;
 
@@ -228,6 +271,11 @@ detect_filetype(const char *filename, magic_t magic_handle)
 #ifdef HAVE_LIBVORBISFILE
     else if (strstr(desc, "Ogg data, Vorbis audio")) {
       return TG_OGGVORBIS;
+    }
+#endif
+#ifdef HAVE_LIBFLAC
+    else if (strstr(desc, "FLAC audio bitstream data")) {
+      return TG_FLAC;
     }
 #endif
     else {
@@ -324,6 +372,27 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
       /* We don't free the media tags, since they just point to the
          strings in the OggVorbis_File structure. */
       ov_clear(&oggv_file);
+    }
+    else {
+      fprintf(stderr, "Error reading file %s!\n", filename);
+    }
+  }
+#endif
+#ifdef HAVE_LIBFLAC
+  else if (file_type == TG_FLAC) {
+    FLAC__StreamMetadata *flac_tags;
+    FLAC__metadata_get_tags(filename, &flac_tags);
+    if (flac_tags) {
+      initialize_flac(flac_tags, &media_file_tags);
+      if ((aux_params->any_tag ?
+	   match_tag_regexps_any(&media_file_tags, tag_regexes->any_tag_regex) :
+	   match_tag_regexps(&media_file_tags, tag_regexes))) {
+	printf("%s%c", filename, aux_params->delimiter);
+	display_tags(aux_params, &media_file_tags);
+      }
+      /* We don't free the media tags, since they just point to the
+         strings in the flac_tags structure. */
+      FLAC__metadata_object_delete(flac_tags);
     }
     else {
       fprintf(stderr, "Error reading file %s!\n", filename);
