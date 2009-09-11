@@ -195,7 +195,7 @@ initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *me
 #endif /* HAVE_LIBVORBISFILE */
 
 #ifdef HAVE_LIBFLAC
-/* Initialize Ogg Vorbis file */
+/* Initialize FLAC file */
 static int
 initialize_flac(const FLAC__StreamMetadata *flac_tags, struct media_file_tags *media_file_tags)
 {
