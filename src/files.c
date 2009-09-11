@@ -36,13 +36,15 @@
 #include <stdlib.h>
 #include <id3tag.h>
 #include <ftw.h>
-#include <metadata.h>
 
 #include "files.h"
 #include "tagregexps.h"
 
 #ifdef HAVE_LIBVORBISFILE
 #include <vorbis/vorbisfile.h>
+#endif
+#ifdef HAVE_LIBFLAC
+#include <metadata.h>
 #endif
 
 enum TG_FILETYPE {TG_UNKNOWN = 0, TG_MP3, TG_OGGVORBIS, TG_FLAC};
