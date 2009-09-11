@@ -7,12 +7,15 @@ AC_CHECK_FUNCS([memset strcasecmp strstr])
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
 
 
-AC_CHECK_HEADERS([id3tag.h], AC_CHECK_LIB([id3tag], [id3_file_open], , [AC_MSG_ERROR(Can't find libid3tag)])
-, [AC_MSG_ERROR(Can't find id3tag.h)])
+dnl id3tag
+PKG_CHECK_MODULES([id3tag], id3tag, [], AC_MSG_ERROR([could not find id3tag library in \$PATH]))
+CFLAGS="$CFLAGS $id3tag_CFLAGS"
+LIBS="$LIBS $id3tag_LIBS"
 
-AC_CHECK_HEADERS([pcre.h], AC_CHECK_LIB([pcre], [id3_file_open], , [AC_MSG_ERROR(Can't find libpcre)])
-, [AC_MSG_ERROR(Can't find pcre.h)])
-
+dnl pcre
+PKG_CHECK_MODULES([pcre], libpcre, [], AC_MSG_ERROR([could not find pcre library in \$PATH]))
+CFLAGS="$CFLAGS $pcre_CFLAGS"
+LIBS="$LIBS $pcre_LIBS"
 
 dnl vorbisfile
 have_libvorbisfile=no
@@ -22,11 +25,22 @@ AS_HELP_STRING([--with-libvorbisfile],[use libvorbisfile library]),
 [use_libvorbisfile=yes])
 
 if test "$use_libvorbisfile" = "yes"; then
-AC_CHECK_HEADER(vorbis/vorbisfile.h,
-[AC_CHECK_LIB(vorbisfile,ov_fopen,[AC_DEFINE(HAVE_LIBVORBISFILE, 1, [Define to 1 if your system supports libvorbisfile])
-LIBS="$LIBS -lvorbisfile -lvorbis -lm -logg"
-have_libvorbisfile=yes])
-])
+PKG_CHECK_MODULES([vorbisfile], vorbisfile, [], AC_MSG_ERROR([could not find vorbisfile library in \$PATH]))
+CFLAGS="$CFLAGS $vorbisfile_CFLAGS"
+LIBS="$LIBS $vorbisfile_LIBS"
+fi
+
+dnl flac
+have_libflac=no
+AC_ARG_WITH(libflac,
+AS_HELP_STRING([--with-libflac],[use libflac library]),
+[use_libflac=$withval],
+[use_libflac=yes])
+
+if test "$use_libflac" = "yes"; then
+PKG_CHECK_MODULES([FLAC], flac, [], AC_MSG_ERROR([could not find flac library in \$PATH]))
+CFLAGS="$CFLAGS $FLAC_CFLAGS"
+LIBS="$LIBS $FLAC_LIBS"
 fi
 
 dnl magic
@@ -37,13 +51,10 @@ AS_HELP_STRING([--with-libmagic],[use libmagic library]),
 [use_libmagic=yes])
 
 if test "$use_libmagic" = "yes"; then
-AC_CHECK_HEADER(magic.h,
-[AC_CHECK_LIB(magic,ov_fopen,[AC_DEFINE(HAVE_LIBMAGIC, 1, [Define to 1 if your system supports libmagic])
+AC_CHECK_LIB(magic,magic_open,AC_DEFINE(HAVE_LIBMAGIC, 1, [Define to 1 if your system supports libmagic])
 LIBS="$LIBS -lmagic"
-have_libmagic=yes])
-])
+have_libmagic=yes)
 fi
-
 
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
