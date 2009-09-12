@@ -9,13 +9,16 @@ page.
 Installation
 ------------
 
-The program requires the development headers and libraries for PCRE,
-libmagic, the Mad ID3 tag library and, optionally, the Ogg Vorbis
-development libraries. On a recent Debian machine, the following
-should fetch these:
+First, download the latest tarball from the Download section in the
+[[Home]] page, and extract it.  The program requires the development
+headers and libraries for PCRE, libmagic, the Mad ID3 tag library and,
+optionally, the Ogg Vorbis and FLAC development libraries. On a recent
+Debian machine, the following should fetch these:
 
-sudo apt-get install libpcre3-dev libmagic-dev libid3tag-dev
-(add libvorbis-dev if you have several Ogg Vorbis files as well).
+    sudo apt-get install libpcre3-dev libmagic-dev libid3tag-dev
+
+(add libvorbis-dev if you have several Ogg Vorbis files as
+well. Likewise, add libflac-dev for FLAC files).
 
 Then, just do ./configure;make;sudo make install
 
@@ -25,7 +28,8 @@ is a short demo. "-r" descends recursively into folders.
 Examples
 --------
 
-To find all songs in the ~/AV/Music_collection/ which have "Rahman" in their "Artist" tag:
+To find all songs in the ~/AV/Music_collection/ which have "Rahman" in
+their "Artist" tag:
 
     $ taggrepper -r -a Rahman ~/AV/Music_collection/
     /home/kumar/AV/Music_collection/Indian/Hindi/Lagaan/05_-_Chale_Chalo.mp3
@@ -83,11 +87,12 @@ Finally, Unni Menon's songs in Rhythm.
 Tricks
 ------
 
-taggrepper is most useful for making a quick
-playlist. For example, you can easily create an M3U file from
-taggrepper output (see http://en.wikipedia.org/wiki/M3U for details).
+taggrepper is most useful for making a quick playlist. For example,
+you can easily create an M3U file from taggrepper output (see
+http://en.wikipedia.org/wiki/M3U for details).
 
-taggrepper can also be used as a find replacement tool, along with xargs. For example, you could use eyeD3 to modify tags as:
+taggrepper can also be used as a find replacement tool, along with
+xargs. For example, you could use eyeD3 to modify tags as:
 
     taggrepper [options] -print0 [files] | xargs -0 eyeD3 <options>
 
@@ -104,4 +109,5 @@ already, I hope.
 
 Suggestions and patches welcome.
 
-  Kumar Appaiah <a.kumar@alumni.iitm.ac.in>
+  Kumar Appaiah
+  E-mail: a dot kumar, followed by at, and ending with alumni dot iitm dot ac dot in
