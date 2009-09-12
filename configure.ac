@@ -1,4 +1,4 @@
-AC_INIT([taggrepper],[0.01],[a.kumar@alumni.iitm.ac.in])
+AC_INIT([taggrepper],[0.03],[a.kumar@alumni.iitm.ac.in])
 AM_INIT_AUTOMAKE([-Wall])
 AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
@@ -9,6 +9,7 @@ AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
 
 dnl id3tag
 PKG_CHECK_MODULES([id3tag], id3tag, [], AC_MSG_ERROR([could not find id3tag library in \$PATH]))
+AC_DEFINE(HAVE_ID3TAG, 1, [Define to 1 if your system supports the id3tag library])
 CFLAGS="$CFLAGS $id3tag_CFLAGS"
 LIBS="$LIBS $id3tag_LIBS"
 
@@ -26,6 +27,7 @@ AS_HELP_STRING([--with-libvorbisfile],[use libvorbisfile library]),
 
 if test "$use_libvorbisfile" = "yes"; then
 PKG_CHECK_MODULES([vorbisfile], vorbisfile, [], AC_MSG_ERROR([could not find vorbisfile library in \$PATH]))
+AC_DEFINE(HAVE_LIBVORBISFILE, 1, [Define to 1 if your system supports libvorbisfile])
 CFLAGS="$CFLAGS $vorbisfile_CFLAGS"
 LIBS="$LIBS $vorbisfile_LIBS"
 fi
@@ -39,6 +41,7 @@ AS_HELP_STRING([--with-libflac],[use libflac library]),
 
 if test "$use_libflac" = "yes"; then
 PKG_CHECK_MODULES([FLAC], flac, [], AC_MSG_ERROR([could not find flac library in \$PATH]))
+AC_DEFINE(HAVE_LIBFLAC, 1, [Define to 1 if your system supports libFLAC])
 CFLAGS="$CFLAGS $FLAC_CFLAGS"
 LIBS="$LIBS $FLAC_LIBS"
 fi
