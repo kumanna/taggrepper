@@ -401,10 +401,6 @@ process_file(const char *filename, struct tag_regexes *tag_regexes, struct aux_p
     }
   }
 #endif
-  /* Don't print these errors for now */
-  /* else { */
-  /*   fprintf(stderr, "Could not read file %s!\n", filename); */
-  /* } */
   return 1;
 }
 
