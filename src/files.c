@@ -157,38 +157,56 @@ free_media_tags(struct media_file_tags *media_file_tags)
 }
 
 
+/* Make tag header uppsercase for strncmp to work for us. */
+static int
+upper_till_equals(char *s)
+{
+  while (*s != '\0' && *s != '=') {
+    *s = toupper(*s);
+    s++;
+  }
+}
+
 #ifdef HAVE_LIBVORBISFILE
 /* Initialize Ogg Vorbis file */
 static int
 initialize_oggvorbis(const OggVorbis_File *oggv_file, struct media_file_tags *media_file_tags)
 {
   int i;
+  char *user_comments;
 
   for (i = 0; i < oggv_file->vc->comments; ++i) {
-    if (!strncmp(oggv_file->vc->user_comments[i], "TITLE=", 6)) {
+    user_comments = strdup(oggv_file->vc->user_comments[i]);
+    if (user_comments == NULL) {
+      /* We couldn't allocate memory! */
+      return 0;
+    }
+    upper_till_equals(user_comments);
+    if (!strncmp(user_comments, "TITLE=", 6)) {
       media_file_tags->title = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "ARTIST=", 7)) {
+    else if (!strncmp(user_comments, "ARTIST=", 7)) {
       media_file_tags->artist = oggv_file->vc->user_comments[i] + 7;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "ALBUM=", 6)) {
+    else if (!strncmp(user_comments, "ALBUM=", 6)) {
       media_file_tags->album = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "TRACK=", 6)) {
+    else if (!strncmp(user_comments, "TRACK=", 6)) {
       media_file_tags->track = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "YEAR=", 5)) {
+    else if (!strncmp(user_comments, "YEAR=", 5)) {
       media_file_tags->year = oggv_file->vc->user_comments[i] + 5;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "GENRE=", 6)) {
+    else if (!strncmp(user_comments, "GENRE=", 6)) {
       media_file_tags->genre = oggv_file->vc->user_comments[i] + 6;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "COMMENT=", 8)) {
+    else if (!strncmp(user_comments, "COMMENT=", 8)) {
       media_file_tags->comment = oggv_file->vc->user_comments[i] + 8;
     }
-    else if (!strncmp(oggv_file->vc->user_comments[i], "ENCODED-BY=", 11)) {
+    else if (!strncmp(user_comments, "ENCODED-BY=", 11)) {
       media_file_tags->encoded_by = oggv_file->vc->user_comments[i] + 11;
     }
+    free(user_comments);
   }
   return 1;
 }
