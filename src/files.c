@@ -218,32 +218,40 @@ static int
 initialize_flac(const FLAC__StreamMetadata *flac_tags, struct media_file_tags *media_file_tags)
 {
   int i;
+  char *user_comments;
 
   for (i = 0; i < flac_tags->data.vorbis_comment.num_comments; ++i) {
-    if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "TITLE=", 6)) {
+    user_comments = strdup(flac_tags->data.vorbis_comment.comments[i].entry);
+    if (user_comments == NULL) {
+      /* We couldn't allocate memory! */
+      return 0;
+    }
+    upper_till_equals(user_comments);
+    if (!strncmp(user_comments, "TITLE=", 6)) {
       media_file_tags->title = flac_tags->data.vorbis_comment.comments[i].entry + 6;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ARTIST=", 7)) {
+    else if (!strncmp(user_comments, "ARTIST=", 7)) {
       media_file_tags->artist = flac_tags->data.vorbis_comment.comments[i].entry + 7;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ALBUM=", 6)) {
+    else if (!strncmp(user_comments, "ALBUM=", 6)) {
       media_file_tags->album = flac_tags->data.vorbis_comment.comments[i].entry + 6;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "TRACK=", 6)) {
+    else if (!strncmp(user_comments, "TRACK=", 6)) {
       media_file_tags->track = flac_tags->data.vorbis_comment.comments[i].entry + 6;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "YEAR=", 5)) {
+    else if (!strncmp(user_comments, "YEAR=", 5)) {
       media_file_tags->year = flac_tags->data.vorbis_comment.comments[i].entry + 5;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "GENRE=", 6)) {
+    else if (!strncmp(user_comments, "GENRE=", 6)) {
       media_file_tags->genre = flac_tags->data.vorbis_comment.comments[i].entry + 6;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "COMMENT=", 8)) {
+    else if (!strncmp(user_comments, "COMMENT=", 8)) {
       media_file_tags->comment = flac_tags->data.vorbis_comment.comments[i].entry + 8;
     }
-    else if (!strncmp(flac_tags->data.vorbis_comment.comments[i].entry, "ENCODED-BY=", 11)) {
+    else if (!strncmp(user_comments, "ENCODED-BY=", 11)) {
       media_file_tags->encoded_by = flac_tags->data.vorbis_comment.comments[i].entry + 11;
     }
+    free(user_comments);
   }
   return 1;
 }
