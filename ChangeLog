@@ -3,6 +3,8 @@
 	* src/files.c: explicitly include FLAC directory when referencing
 	the FLAC header.
 
+	* Update autoconf files
+
 2009-07-30  Kumar Appaiah  <a.kumar@alumni.iitm.ac.in>
 
 	* Initial tarball
