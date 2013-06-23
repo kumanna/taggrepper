@@ -44,7 +44,7 @@
 #include <vorbis/vorbisfile.h>
 #endif
 #ifdef HAVE_LIBFLAC
-#include <metadata.h>
+#include <FLAC/metadata.h>
 #endif
 
 enum TG_FILETYPE {TG_UNKNOWN = 0, TG_MP3, TG_OGGVORBIS, TG_FLAC};
