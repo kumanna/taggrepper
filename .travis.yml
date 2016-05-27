@@ -1,0 +1,10 @@
+language: c
+addons:
+  apt:
+    packages:
+      - libpcre3-dev
+      - libflac-dev
+      - libid3tag0-dev
+      - libvorbis-dev
+      - libmagic-dev
+      - pkg-config
