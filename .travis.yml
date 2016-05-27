@@ -11,3 +11,4 @@ addons:
       - libvorbis-dev
       - libmagic-dev
       - pkg-config
+script: ./autogen.sh && ./configure && make
