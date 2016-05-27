@@ -9,6 +9,8 @@ page.
 Installation
 ------------
 
+[![Build Status](https://travis-ci.org/kumanna/taggrepper.svg?branch=master)](https://travis-ci.org/kumanna/taggrepper)
+
 First, download the latest tarball from the Download section in the
 [[Home]] page, and extract it.  The program requires the development
 headers and libraries for PCRE, libmagic, the Mad ID3 tag library and,
