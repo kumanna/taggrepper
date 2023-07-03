@@ -1,4 +1,4 @@
-AC_INIT([taggrepper],[0.05],[a.kumar@alumni.iitm.ac.in])
+AC_INIT([taggrepper],[0.10],[a.kumar@alumni.iitm.ac.in])
 AM_INIT_AUTOMAKE([foreign -Wall])
 AC_PROG_CC
 AC_CONFIG_HEADERS([config.h])
