@@ -36,6 +36,7 @@
 #include <stdlib.h>
 #include <id3tag.h>
 #include <ftw.h>
+#include <ctype.h>
 
 #include "files.h"
 #include "tagregexps.h"

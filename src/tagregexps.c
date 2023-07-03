@@ -36,30 +36,34 @@
 #include "tagregexps.h"
 
 /* Initialize and return a regular expression */
-pcre *
+pcre2_code *
 initialize_regexp(const char *regexp_str)
 {
-  pcre *re;
+  pcre2_code *re;
   const char *error;
-  int erroroffset;
+  int errorcode;
+  PCRE2_SIZE offset;
+  uint32_t options = PCRE2_UTF | PCRE2_UCP;
 
-  re = pcre_compile(regexp_str, PCRE_UTF8, &error, &erroroffset, NULL);
+  re = pcre2_compile((PCRE2_SPTR)regexp_str, PCRE2_ZERO_TERMINATED, options, &errorcode, &offset, NULL);
   if (re) {
     return re;
   }
 
-  fprintf(stderr, "ERROR: compiling regular expression at offset %d: %s\n", erroroffset, error);
+  PCRE2_UCHAR buffer[256];
+  pcre2_get_error_message(errorcode, buffer, sizeof(buffer));
+  fprintf(stderr, "ERROR: compiling regular expression: %s\n", buffer);
   return NULL;
 }
 
 /* Match a string against a regular expression */
 static int
-match_string(pcre *re, const char *subject)
+match_string(pcre2_code *re, const char *subject)
 {
-  /* ovector's length is three since we are just interested in the
-     first match. */
-  int ovector[3];
   int rc;
+  pcre2_match_data *match_data;
+
+  match_data = pcre2_match_data_create_from_pattern(re, NULL);
 
   /* If the regular expression was not initialized, succeed. */
   if (!re) {
@@ -70,12 +74,13 @@ match_string(pcre *re, const char *subject)
     return 0;
   }
 
-  rc = pcre_exec(re, NULL, subject, strlen(subject), 0, 0, ovector, 3);
-  return (rc >= 0 && rc != PCRE_ERROR_NOMATCH);
+  rc = pcre2_match(re, (PCRE2_SPTR) subject, strlen(subject), 0, 0, match_data, NULL);
+  pcre2_match_data_free(match_data);
+  return (rc >= 0 && rc != PCRE2_ERROR_NOMATCH);
 }
 
 int
-match_tag_regexps_any(struct media_file_tags *media_file_tags, pcre *any_tag_regex){
+match_tag_regexps_any(struct media_file_tags *media_file_tags, pcre2_code *any_tag_regex){
   return match_string(any_tag_regex, media_file_tags->title) || \
     match_string(any_tag_regex, media_file_tags->artist) || \
     match_string(any_tag_regex, media_file_tags->album) ||	\

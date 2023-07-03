@@ -14,9 +14,9 @@ CFLAGS="$CFLAGS $id3tag_CFLAGS"
 LIBS="$LIBS $id3tag_LIBS"
 
 dnl pcre
-PKG_CHECK_MODULES([pcre], libpcre, [], AC_MSG_ERROR([could not find pcre library in \$PATH]))
-CFLAGS="$CFLAGS $pcre_CFLAGS"
-LIBS="$LIBS $pcre_LIBS"
+PKG_CHECK_MODULES([pcre2], libpcre2-8, [], AC_MSG_ERROR([could not find pcre library in \$PATH]))
+CFLAGS="$CFLAGS $pcre2_CFLAGS"
+LIBS="$LIBS $pcre2_LIBS"
 
 dnl vorbisfile
 have_libvorbisfile=no

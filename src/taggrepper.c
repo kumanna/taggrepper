@@ -55,18 +55,18 @@
 static void
 free_tag_regexes(struct tag_regexes *tag_regexes, struct aux_params *aux_params)
 {
-  pcre_free(tag_regexes->title_regex);
-  pcre_free(tag_regexes->artist_regex);
-  pcre_free(tag_regexes->album_regex);
-  pcre_free(tag_regexes->year_regex);
-  pcre_free(tag_regexes->genre_regex);
-  pcre_free(tag_regexes->comment_regex);
-  pcre_free(tag_regexes->composer_regex);
-  pcre_free(tag_regexes->orig_artist_regex);
-  pcre_free(tag_regexes->copyright_regex);
-  pcre_free(tag_regexes->url_regex);
-  pcre_free(tag_regexes->encoded_by_regex);
-  pcre_free(tag_regexes->any_tag_regex);
+  pcre2_code_free(tag_regexes->title_regex);
+  pcre2_code_free(tag_regexes->artist_regex);
+  pcre2_code_free(tag_regexes->album_regex);
+  pcre2_code_free(tag_regexes->year_regex);
+  pcre2_code_free(tag_regexes->genre_regex);
+  pcre2_code_free(tag_regexes->comment_regex);
+  pcre2_code_free(tag_regexes->composer_regex);
+  pcre2_code_free(tag_regexes->orig_artist_regex);
+  pcre2_code_free(tag_regexes->copyright_regex);
+  pcre2_code_free(tag_regexes->url_regex);
+  pcre2_code_free(tag_regexes->encoded_by_regex);
+  pcre2_code_free(tag_regexes->any_tag_regex);
 #ifdef HAVE_LIBMAGIC
   if (aux_params->magic_handle) {
     magic_close(aux_params->magic_handle);
@@ -135,7 +135,7 @@ parse_command_line(int argc, char *argv[], struct tag_regexes *tag_regexes, stru
 
   while (1) {
     int option_index = 0;
-    pcre *re;
+    pcre2_code *re;
 
     /* TODO: Is this list of tags good enough? More? Less? */
     static struct option long_options[] = {

@@ -46,3 +46,4 @@ _$*
 *.mo
 .*.swp
 .deps
+src/taggrepper

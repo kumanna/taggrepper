@@ -38,7 +38,8 @@
 #ifdef HAVE_LIBMAGIC
 #include <magic.h>
 #endif
-#include <pcre.h>
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
 
 struct media_file_tags {
   char *title;
@@ -56,19 +57,19 @@ struct media_file_tags {
 };
 
 struct tag_regexes {
-  pcre *title_regex;
-  pcre *artist_regex;
-  pcre *album_regex;
-  pcre *year_regex;
-  pcre *genre_regex;
-  pcre *comment_regex;
-  pcre *track_regex;
-  pcre *composer_regex;
-  pcre *orig_artist_regex;
-  pcre *copyright_regex;
-  pcre *url_regex;
-  pcre *encoded_by_regex;
-  pcre *any_tag_regex;
+  pcre2_code *title_regex;
+  pcre2_code *artist_regex;
+  pcre2_code *album_regex;
+  pcre2_code *year_regex;
+  pcre2_code *genre_regex;
+  pcre2_code *comment_regex;
+  pcre2_code *track_regex;
+  pcre2_code *composer_regex;
+  pcre2_code *orig_artist_regex;
+  pcre2_code *copyright_regex;
+  pcre2_code *url_regex;
+  pcre2_code *encoded_by_regex;
+  pcre2_code *any_tag_regex;
 };
 
 struct aux_params {
